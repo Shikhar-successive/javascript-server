@@ -7,6 +7,9 @@ class TextField extends Component {
     const {
       value, disabled, error, pattern,
     } = this.props;
+    console.log(value);
+    console.log(disabled);
+    console.log(this.props);
     return (
       <>
         <input className="style_valid" type="text" defaultValue={value} disabled={disabled} error={error} pattern={pattern} />
