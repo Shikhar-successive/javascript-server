@@ -8,8 +8,12 @@ class TextFieldDemo extends Component {
       <>
         <Slider
           alttext="Default Banner"
-          banners={['array ', 12, ' hello']}
-          defaultbanner="default.png"
+          banners={['/images/cloud.jpg',
+            '/images/js.jpg',
+            '/images/load-balancer.png',
+            '/images/full-stack-web-development.jpg',
+            '/images/dns-server.png']}
+          defaultbanner="/banners/default.png"
           duration={2000}
           height={200}
           random={false}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './style.css';
+import { getRandomNumber, getNextRoundRobin } from '../../libs/utils/math';
 
 class Slider extends Component {
   id
@@ -9,16 +10,30 @@ class Slider extends Component {
     super(props);
 
     this.state = {
-      number: 1,
+      index: 0,
     };
   }
 
   componentDidMount() {
     console.log('inside Componant did Mount');
+    let { index } = this.state;
+    const { duration, random } = this.props;
     this.id = setInterval(() => {
-      console.log('inside SetInterval');
-      this.setState((prevState) => ({ number: prevState.number + 1 }));
-    }, 1000);
+      if (random) {
+        const randomNumber = getRandomNumber();
+        this.setState({ index: randomNumber });
+      } else {
+        const roundRobinNumber = getNextRoundRobin(4, index);
+        console.log(index);
+        if (index === 4) {
+          index = 0;
+        } else {
+          index += 1;
+        }
+        console.log(roundRobinNumber);
+        this.setState({ index: roundRobinNumber });
+      }
+    }, duration);
   }
 
   componentWillUnmount() {
@@ -28,30 +43,26 @@ class Slider extends Component {
 
   render() {
     const {
-      alttext, banners, defaultbanner, duration, height, random,
+      alttext,
+      banners,
+      defaultbanner,
+      height,
     } = this.props;
-    const { number } = this.state;
+    const { index } = this.state;
+    console.log(banners[index]);
+    let image;
+    if (banners[index] !== undefined) {
+      image = <img height={height} src={banners[index]} alt={alttext} />;
+    } else {
+      image = <img height={height} src={defaultbanner} alt={alttext} />;
+    }
     return (
       <>
         <div className="style_slider">
-          <b>
-            THis is Slider
-          </b>
-          <div
-            alttext={alttext}
-            banners={banners}
-            defaultbanner={defaultbanner}
-            duration={duration}
-            height={height}
-            random={random}
-          >
-            <div>{alttext}</div>
-            <div>{banners}</div>
-            <div>{defaultbanner}</div>
-            <div>{duration}</div>
-            <div>{height}</div>
-            <div>{random}</div>
-            <div>{number}</div>
+          <div>
+            <div>
+              {image}
+            </div>
           </div>
         </div>
       </>
