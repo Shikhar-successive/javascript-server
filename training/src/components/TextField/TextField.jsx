@@ -5,28 +5,30 @@ import './style.css';
 class TextField extends Component {
   render() {
     const {
-      value, disabled, error, pattern,
+      value, onChange,
     } = this.props;
-    console.log(value);
-    console.log(disabled);
-    console.log(this.props);
+    // console.log(value);
+    // console.log(disabled);
+    // console.log(this.props);
     return (
       <>
-        <input className="style_valid" type="text" defaultValue={value} disabled={disabled} error={error} pattern={pattern} />
+        <input className="style_TextField" type="text" value={value} onChange={onChange} />
       </>
     );
   }
 }
 TextField.propTypes = {
-  disabled: PropTypes.bool,
+  // disabled: PropTypes.bool,
   value: PropTypes.string,
-  error: PropTypes.string,
-  pattern: PropTypes.string,
+  // error: PropTypes.string,
+  // pattern: PropTypes.string,
+  onChange: PropTypes.func,
 };
 TextField.defaultProps = {
-  disabled: PropTypes.bool.isRequired,
+  // disabled: PropTypes.bool.isRequired,
   value: PropTypes.string.isRequired,
-  error: PropTypes.string.isRequired,
-  pattern: PropTypes.pattern,
+  // error: PropTypes.string.isRequired,
+  // pattern: PropTypes.pattern,
+  onChange: PropTypes.func,
 };
 export default TextField;
