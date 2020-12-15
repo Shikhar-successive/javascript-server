@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './style.css';
+import style from './style';
 
 class TextField extends Component {
   render() {
     const {
-      value, onChange,
+      value, onChange, onBlur, error,
     } = this.props;
     // console.log(value);
     // console.log(disabled);
     // console.log(this.props);
     return (
       <>
-        <input className="style_TextField" type="text" value={value} onChange={onChange} />
+        <input style={style.text} type="text" value={value} onChange={onChange} onBlur={onBlur} />
+        {error ? <div style={{ color: 'red' }}>{error}</div> : ''}
       </>
     );
   }
@@ -23,6 +24,8 @@ TextField.propTypes = {
   // error: PropTypes.string,
   // pattern: PropTypes.string,
   onChange: PropTypes.func,
+  onBlur: PropTypes.func,
+  error: PropTypes.string,
 };
 TextField.defaultProps = {
   // disabled: PropTypes.bool.isRequired,
@@ -30,5 +33,7 @@ TextField.defaultProps = {
   // error: PropTypes.string.isRequired,
   // pattern: PropTypes.pattern,
   onChange: PropTypes.func,
+  onBlur: PropTypes.func,
+  error: PropTypes.string,
 };
 export default TextField;

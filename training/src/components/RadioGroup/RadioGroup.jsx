@@ -3,38 +3,31 @@ import PropTypes from 'prop-types';
 
 class RadioGroup extends Component {
   render() {
-    const { onChange, options } = this.props;
-    console.log(options[0]);
+    const {
+      onChange, options, value, onBlur, error,
+    } = this.props;
+    // console.log(options[0]);
     return (
       <>
         <div>
-          <input type="radio" name="sportRole" id="role" value={options[0].value} onChange={onChange} />
-          <label htmlFor={options[0].label}>
-            {' '}
-            {options[0].value}
-          </label>
+          {
+            // eslint-disable-next-line max-len
+            // <input type="radio" name="sportRole" id="role" value={options[0].value} onChange={onChange} />
+            // <label htmlFor={options[0].label}>
+            //   {' '}
+            //   {options[0].value}
+            // </label>
+            options.map((item) => (
+              <div key={item.value}>
+                <input type="radio" name="sportRole" id={item.label} onChange={onChange} value={item.value} checked={value === item.value} onBlur={onBlur} />
+                <label htmlFor={item.label}>{item.value}</label>
+              </div>
+            ))
+          }
         </div>
-        <div>
-          <input type="radio" name="sportRole" id="role" value={options[1].value} onChange={onChange} />
-          <label htmlFor={options[1].label}>
-            {' '}
-            {options[1].value}
-          </label>
-        </div>
-        <div>
-          <input type="radio" name="sportRole" id="role" value={options[2].value} onChange={onChange} />
-          <label htmlFor={options[2].label}>
-            {' '}
-            {options[2].value}
-          </label>
-        </div>
-        <div>
-          <input type="radio" name="sportRole" id="role" value={options[3].value} onChange={onChange} />
-          <label htmlFor={options[0].label}>
-            {' '}
-            {options[3].value}
-          </label>
-        </div>
+        {
+          error && (<div style={{ color: 'red' }}>{error}</div>)
+        }
       </>
     );
   }
@@ -43,11 +36,15 @@ RadioGroup.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func,
   options: PropTypes.instanceOf(Array),
+  onBlur: PropTypes.func,
+  error: PropTypes.string,
 };
 
 RadioGroup.defaultProps = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   options: PropTypes.instanceOf(Array),
+  onBlur: PropTypes.func,
+  error: PropTypes.string,
 };
 export default RadioGroup;
