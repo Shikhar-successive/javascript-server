@@ -6,5 +6,4 @@ function App() {
     <InputDemo />
   );
 }
-
 export default App;
