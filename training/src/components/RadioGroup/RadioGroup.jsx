@@ -25,9 +25,7 @@ class RadioGroup extends Component {
             ))
           }
         </div>
-        {
-          error && (<div style={{ color: 'red' }}>{error}</div>)
-        }
+        <p>{ error }</p>
       </>
     );
   }

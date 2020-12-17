@@ -1,3 +1,5 @@
+// import styled from 'styled-components';
+
 export default {
   primary: {
     borderColor: '#4CAF50',
@@ -12,3 +14,11 @@ export default {
     height: '22px',
   },
 };
+// export const buttons = styled.button`
+//   border-color: #4CAF50;
+//   border-Radius: 4px;
+//   font-weight: bold;
+//   cursor: pointer;
+//   height: 22px;
+//   border: 1px solid #b0b0b0;
+// `;
