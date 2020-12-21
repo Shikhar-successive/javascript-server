@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import Button from '@material-ui/core/Button';
 import { AddDialog } from './Componants';
-import { Navbar } from '../componants';
 
 class Trainee extends Component {
   constructor() {
@@ -24,8 +23,7 @@ class Trainee extends Component {
     const { open } = this.state;
     return (
       <>
-        <Navbar />
-        <Button color="primary" variant="contained" onClick={this.onOpen} style={{ marginTop: '60px' }}>
+        <Button color="primary" variant="contained" onClick={this.onOpen} style={{ marginTop: '10px' }}>
           Add Trainee
         </Button>
         <AddDialog

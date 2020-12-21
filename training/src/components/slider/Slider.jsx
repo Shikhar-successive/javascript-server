@@ -58,7 +58,7 @@ class Slider extends Component {
     }
     return (
       <>
-        <div className="style_slider">
+        <div className="style_slider" style={{ marginTop: '10px' }}>
           <div>
             <div>
               {image}
