@@ -25,7 +25,6 @@ class TextFieldDemo extends Component {
         <p>A Valid Input</p>
         <TextField
           value="Accessible"
-          error="Error"
           disabled={false}
         />
         <p>An Input with Error</p>
