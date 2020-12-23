@@ -5,12 +5,17 @@ import PropTypes from 'prop-types';
 import { AddDialog } from './Componants';
 import trainees from './Data/trainee';
 import { Table } from '../../components';
+import { getFormattedDate } from '../../libs/utils/getFormattedDate';
 
+const asend = 'asc';
+const dsend = 'desc';
 class TraineeList extends Component {
   constructor() {
     super();
     this.state = {
       open: false,
+      orderBy: '',
+      order: asend,
     };
   }
 
@@ -22,8 +27,22 @@ class TraineeList extends Component {
     this.setState({ open: false });
   };
 
+  handleSort = (field) => {
+    const { order, orderBy } = this.state;
+    let tabOrder = asend;
+    if (orderBy === field && order === asend) {
+      tabOrder = dsend;
+    }
+    this.setState({ orderBy: field, order: tabOrder });
+  }
+
+  handleSelect = (data) => {
+    const { history } = this.props;
+    history.push(`/trainee/${data.id}`);
+  }
+
   render() {
-    const { open } = this.state;
+    const { open, order, orderBy } = this.state;
     const { match } = this.props;
     // const classes = this.useStyles();
     return (
@@ -45,13 +64,23 @@ class TraineeList extends Component {
             {
               field: 'name',
               label: 'Name',
-              align: 'center',
             },
             {
               field: 'email',
               label: 'Email Address',
+              format: (value) => value && value.toUpperCase(),
+            },
+            {
+              field: 'createdAt',
+              label: 'Date',
+              align: 'right',
+              format: getFormattedDate,
             },
           ]}
+          orderBy={orderBy}
+          order={order}
+          onSort={this.handleSort}
+          onSelect={this.handleSelect}
         />
         <div>
           {
@@ -70,6 +99,7 @@ class TraineeList extends Component {
 }
 TraineeList.propTypes = {
   match: PropTypes.objectOf(PropTypes.any).isRequired,
+  history: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 export default TraineeList;

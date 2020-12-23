@@ -5,20 +5,13 @@ import {
   Card,
   Button,
   CardContent,
-  // CardMedia,
   Typography,
-  // makeStyles,
 } from '@material-ui/core';
-import moment from 'moment';
 import trainees from './Data/trainee';
 import { NoMatch } from '../NoMatch';
+import { getFormattedDate } from '../../libs/utils/getFormattedDate';
 
 class TraineeDetail extends Component {
-  getDate = (date) => {
-    const formatedDate = moment(date).format('dddd, MMMM Do yyyy, hh:mm:ss a');
-    return formatedDate;
-  }
-
   render() {
     const { match: { params: { id } } } = this.props;
     const data = trainees.find((element) => element.id === id);
@@ -30,7 +23,7 @@ class TraineeDetail extends Component {
               <img src="" height="120px" width="120px" alt="" />
               <CardContent>
                 <Typography variant="h5">{data.name}</Typography>
-                <Typography color="textSecondary">{this.getDate(data.createdAt)}</Typography>
+                <Typography color="textSecondary">{getFormattedDate(data.createdAt)}</Typography>
                 <Typography>{data.email}</Typography>
               </CardContent>
             </div>

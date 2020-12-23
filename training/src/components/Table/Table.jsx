@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-boolean-value */
 import React from 'react';
 import {
   Table,
@@ -6,43 +7,67 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
 } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.grey[300],
+    },
+    '&:hover': {
+      backgroundColor: ' #a8a8a8 !important',
+    },
   },
-});
+}))(TableRow);
+
 export default function MyTable(props) {
-  const classes = useStyles();
-  const { id, data, column } = props;
+  const {
+    id, data, column, order, orderBy,
+  } = props;
+
+  const handleSort = (field) => () => {
+    const { onSort } = props;
+    onSort(field);
+  };
 
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
+      <Table aria-label="simple table">
         <TableHead>
           <TableRow>
             {
               column.map((item) => (
-                <TableCell key={item.label} align={item.align}>{item.label}</TableCell>
+                <>
+                  <TableCell key={item.label} align={item.align}>
+                    <TableSortLabel
+                      active={orderBy === item.field}
+                      direction={order}
+                      onClick={handleSort(item.field)}
+                      align={item.align}
+                    >
+                      {item.label}
+                    </TableSortLabel>
+                  </TableCell>
+                </>
               ))
             }
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((trainees) => (
-            <TableRow key={trainees[id]}>
+            <StyledTableRow key={trainees[id]} hover={true}>
               {
                 column.map((item) => (
                   <TableCell key={`${trainees[id]}${item.field}`} align={item.align}>
-                    {trainees[item.field]}
+                    {item.format ? item.format(trainees[item.field]) : trainees[item.field] }
                   </TableCell>
                 ))
               }
-            </TableRow>
+            </StyledTableRow>
           ))}
         </TableBody>
       </Table>
@@ -53,4 +78,12 @@ MyTable.propTypes = {
   id: PropTypes.string.isRequired,
   column: PropTypes.arrayOf(Object).isRequired,
   data: PropTypes.arrayOf(Object).isRequired,
+  order: PropTypes.string,
+  orderBy: PropTypes.string,
+  onSort: PropTypes.func,
+};
+MyTable.defaultProps = {
+  order: '',
+  orderBy: '',
+  onSort: () => {},
 };
