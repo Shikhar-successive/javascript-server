@@ -15,7 +15,6 @@ class Slider extends Component {
   }
 
   componentDidMount() {
-    console.log('inside Componant did Mount');
     let { index } = this.state;
     const { duration, random } = this.props;
     this.id = setInterval(() => {
@@ -24,20 +23,17 @@ class Slider extends Component {
         this.setState({ index: randomNumber });
       } else {
         const roundRobinNumber = getNextRoundRobin(4, index);
-        console.log(index);
         if (index === 4) {
           index = 0;
         } else {
           index += 1;
         }
-        console.log(roundRobinNumber);
         this.setState({ index: roundRobinNumber });
       }
     }, duration);
   }
 
   componentWillUnmount() {
-    console.log('inside Componant Will Unmount');
     clearInterval(this.id);
   }
 
@@ -49,7 +45,6 @@ class Slider extends Component {
       height,
     } = this.props;
     const { index } = this.state;
-    console.log(banners[index]);
     let image;
     if (banners[index] !== undefined) {
       image = <img height={height} src={banners[index]} alt={alttext} />;

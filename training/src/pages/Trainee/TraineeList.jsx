@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
-import trainees from './Data/trainee';
 import { AddDialog } from './Componants';
+import trainees from './Data/trainee';
+import { Table } from '../../components';
 
 class TraineeList extends Component {
   constructor() {
@@ -24,15 +25,33 @@ class TraineeList extends Component {
   render() {
     const { open } = this.state;
     const { match } = this.props;
+    // const classes = this.useStyles();
     return (
       <>
-        <Button color="primary" variant="contained" onClick={this.onOpen} style={{ marginTop: '10px' }}>
-          Add Trainee
-        </Button>
-        <AddDialog
-          open={open}
-          onClose={this.onCloseEvent}
-          onSubmit={this.onCloseEvent}
+        <div style={{ display: 'flex', justifyContent: 'end' }}>
+          <Button color="primary" variant="contained" onClick={this.onOpen} style={{ marginTop: '10px' }}>
+            Add Trainee
+          </Button>
+          <AddDialog
+            open={open}
+            onClose={this.onCloseEvent}
+            onSubmit={this.onCloseEvent}
+          />
+        </div>
+        <Table
+          id="id"
+          data={trainees}
+          column={[
+            {
+              field: 'name',
+              label: 'Name',
+              align: 'center',
+            },
+            {
+              field: 'email',
+              label: 'Email Address',
+            },
+          ]}
         />
         <div>
           {
