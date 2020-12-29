@@ -8,14 +8,14 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 
 class DeleteDialog extends Component {
   render() {
-    const { open, onClose } = this.props;
+    const { open, onClose, onSubmit } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
         <DialogTitle style={{ alignContent: 'start' }}>Delete Trainee</DialogTitle>
         <DialogContentText style={{ paddingLeft: '25px' }}>Do you really want to delete Trainee</DialogContentText>
         <DialogActions>
           <Button onClick={onClose} color="primary">Cancel</Button>
-          <Button onClick={onClose} color="primary" variant="contained">Delete</Button>
+          <Button onClick={onSubmit} color="primary" variant="contained">Delete</Button>
         </DialogActions>
       </Dialog>
     );
@@ -24,5 +24,6 @@ class DeleteDialog extends Component {
 DeleteDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
 export default DeleteDialog;

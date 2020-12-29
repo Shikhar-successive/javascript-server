@@ -68,7 +68,7 @@ export default function MyTable(props) {
                       {item.format ? item.format(trainees[item.field]) : trainees[item.field] }
                       {item.label === 'Date' ? actions.map((action) => (
                         <>
-                          <Button variant="text" onClick={() => action.handler()}>
+                          <Button variant="text" onClick={() => action.handler(trainees)}>
                             {action.icon}
                           </Button>
                         </>

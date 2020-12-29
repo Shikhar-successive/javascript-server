@@ -21,6 +21,7 @@ class TraineeList extends Component {
       page: 0,
       edit: false,
       deleteDialog: false,
+      traineeInfo: {},
     };
   }
 
@@ -33,8 +34,8 @@ class TraineeList extends Component {
   };
 
   editDialogOpen = (item) => {
-    this.selectedIem = item;
-    this.setState({ edit: true });
+    this.selectedItem = item;
+    this.setState({ edit: true, traineeInfo: item });
   };
 
   editDialogClose = () => {
@@ -49,7 +50,7 @@ class TraineeList extends Component {
 
   deleteDialogOpen = (item) => {
     this.selectedIem = item;
-    this.setState({ deleteDialog: true });
+    this.setState({ deleteDialog: true, traineeInfo: item });
   };
 
   deleteDialogClose = () => {
@@ -58,7 +59,8 @@ class TraineeList extends Component {
   };
 
   handleDelete = () => {
-    console.log(this.selectedIem);
+    const { traineeInfo } = this.state;
+    console.log(traineeInfo);
     this.deleteDialogClose();
   }
 
@@ -88,6 +90,7 @@ class TraineeList extends Component {
       orderBy,
       page,
       edit,
+      traineeInfo,
     } = this.state;
     const { match } = this.props;
     // const classes = this.useStyles();
@@ -144,16 +147,18 @@ class TraineeList extends Component {
         <>
           { edit && (
             <EditDialog
+              details={traineeInfo}
               open={edit}
               onClose={this.editDialogClose}
               onSubmit={this.handleEdit}
-              item={this.selectedIem}
+              item={this.selectedItem}
             />
           )}
           { deleteDialog && (
             <DeleteDialog
               open={deleteDialog}
               onClose={this.deleteDialogClose}
+              onSubmit={this.handleDelete}
             />
           )}
         </>
