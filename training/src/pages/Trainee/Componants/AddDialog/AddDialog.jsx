@@ -123,6 +123,8 @@ class AddDialog extends Component {
       password: `${password}`,
     };
     // eslint-disable-next-line no-console
+    const { onSubmit } = this.props;
+    onSubmit();
     console.log(data);
   }
 
@@ -221,6 +223,7 @@ class AddDialog extends Component {
 AddDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
+  onSubmit: PropTypes.func.isRequired,
 };
 AddDialog.defaultProps = {
   open: PropTypes.bool,

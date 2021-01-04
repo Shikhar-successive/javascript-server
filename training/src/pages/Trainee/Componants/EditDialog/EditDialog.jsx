@@ -83,16 +83,25 @@ class EditDialog extends Component {
     return null;
   }
 
+  printState = () => {
+    const {
+      name, email,
+    } = this.state;
+    const data = {
+      name: `${name}`,
+      email: `${email}`,
+    };
+    const { onSubmit } = this.props;
+    onSubmit();
+    console.log(data);
+  }
+
   render() {
     const {
       open,
       onClose,
       details,
-      onSubmit,
     } = this.props;
-    const { name, email } = this.state;
-    // name = details.name;
-    // email = details.email;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
         <DialogTitle style={{ alignContent: 'start' }}>Edit Trainee</DialogTitle>
@@ -139,7 +148,7 @@ class EditDialog extends Component {
         </div>
         <DialogActions>
           <Button onClick={onClose} color="primary">Cancel</Button>
-          <Button disabled={this.hasError() || !this.isTouched()} onClick={() => onSubmit({ name, email })} color="primary" variant="contained">Submit</Button>
+          <Button disabled={this.hasError() || !this.isTouched()} onClick={this.printState} color="primary" variant="contained">Submit</Button>
         </DialogActions>
       </Dialog>
     );

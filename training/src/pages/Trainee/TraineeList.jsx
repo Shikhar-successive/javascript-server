@@ -8,6 +8,7 @@ import { AddDialog, EditDialog, DeleteDialog } from './Componants';
 import trainees from './Data/trainee';
 import { Table } from '../../components';
 import { getFormattedDate } from '../../libs/utils/getFormattedDate';
+import { SnackbarContext } from '../../contexts/SnackBarProvider/SnackBarProvider';
 
 const asend = 'asc';
 const dsend = 'desc';
@@ -33,6 +34,11 @@ class TraineeList extends Component {
     this.setState({ open: false });
   };
 
+  handleSubmit = (openSnackbar) => {
+    openSnackbar('Trainee Created Successfully', 'success');
+    this.onCloseEvent();
+  }
+
   editDialogOpen = (item) => {
     this.selectedItem = item;
     this.setState({ edit: true, traineeInfo: item });
@@ -43,8 +49,9 @@ class TraineeList extends Component {
     this.setState({ edit: false });
   };
 
-  handleEdit = (item) => {
-    console.log(item);
+  handleEdit = (openSnackbar, item) => {
+    openSnackbar('Trainee Updated Successfully', 'success');
+    console.log(item, '=========');
     this.editDialogClose();
   }
 
@@ -58,8 +65,13 @@ class TraineeList extends Component {
     this.setState({ deleteDialog: false });
   };
 
-  handleDelete = () => {
+  handleDelete = (openSnackbar) => {
     const { traineeInfo } = this.state;
+    if (traineeInfo.createdAt >= '2019-02-14') {
+      openSnackbar('Trainee Deleted Successfully', 'success');
+    } else {
+      openSnackbar('Trainee cannot be Deleted', 'error');
+    }
     console.log(traineeInfo);
     this.deleteDialogClose();
   }
@@ -95,85 +107,89 @@ class TraineeList extends Component {
     const { match } = this.props;
     // const classes = this.useStyles();
     return (
-      <>
-        <div style={{ display: 'flex', justifyContent: 'end' }}>
-          <Button color="primary" variant="contained" onClick={this.onOpen} style={{ marginTop: '5px' }}>
-            Add Trainee
-          </Button>
-          <AddDialog
-            open={open}
-            onClose={this.onCloseEvent}
-            onSubmit={this.onCloseEvent}
-          />
-        </div>
-        <Table
-          id="id"
-          data={trainees}
-          column={[
-            {
-              field: 'name',
-              label: 'Name',
-            },
-            {
-              field: 'email',
-              label: 'Email Address',
-              format: (value) => value && value.toUpperCase(),
-            },
-            {
-              field: 'createdAt',
-              label: 'Date',
-              align: 'right',
-              format: getFormattedDate,
-            },
-          ]}
-          actions={[
-            {
-              icon: <EditIcon />,
-              handler: this.editDialogOpen,
-            },
-            {
-              icon: <DeleteIcon />,
-              handler: this.deleteDialogOpen,
-            },
-          ]}
-          orderBy={orderBy}
-          order={order}
-          onSort={this.handleSort}
-          // onSelect={this.handleSelect}
-          count={100}
-          page={page}
-          onPageChange={this.handlePageChange}
-        />
-        <>
-          { edit && (
-            <EditDialog
-              details={traineeInfo}
-              open={edit}
-              onClose={this.editDialogClose}
-              onSubmit={this.handleEdit}
-              item={this.selectedItem}
+      <SnackbarContext.Consumer>
+        {(openSnackbar) => (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'end' }}>
+              <Button color="primary" variant="contained" onClick={this.onOpen} style={{ marginTop: '5px' }}>
+                Add Trainee
+              </Button>
+              <AddDialog
+                open={open}
+                onClose={this.onCloseEvent}
+                onSubmit={() => this.handleSubmit(openSnackbar)}
+              />
+            </div>
+            <Table
+              id="id"
+              data={trainees}
+              column={[
+                {
+                  field: 'name',
+                  label: 'Name',
+                },
+                {
+                  field: 'email',
+                  label: 'Email Address',
+                  format: (value) => value && value.toUpperCase(),
+                },
+                {
+                  field: 'createdAt',
+                  label: 'Date',
+                  align: 'right',
+                  format: getFormattedDate,
+                },
+              ]}
+              actions={[
+                {
+                  icon: <EditIcon />,
+                  handler: this.editDialogOpen,
+                },
+                {
+                  icon: <DeleteIcon />,
+                  handler: this.deleteDialogOpen,
+                },
+              ]}
+              orderBy={orderBy}
+              order={order}
+              onSort={this.handleSort}
+              // onSelect={this.handleSelect}
+              count={100}
+              page={page}
+              onPageChange={this.handlePageChange}
             />
-          )}
-          { deleteDialog && (
-            <DeleteDialog
-              open={deleteDialog}
-              onClose={this.deleteDialogClose}
-              onSubmit={this.handleDelete}
-            />
-          )}
-        </>
-        <div>
-          {
-            trainees.map((item) => (
-              <ul key={item.id}>
-                <li>
-                  <Link to={`${match.path}/${item.id}`}>{item.name}</Link>
-                </li>
-              </ul>
-            ))
-          }
-        </div>
-      </>
+            <>
+              { edit && (
+                <EditDialog
+                  details={traineeInfo}
+                  open={edit}
+                  onClose={this.editDialogClose}
+                  onSubmit={() => this.handleEdit(openSnackbar)}
+                  item={this.selectedItem}
+                />
+              )}
+              { deleteDialog && (
+                <DeleteDialog
+                  open={deleteDialog}
+                  onClose={this.deleteDialogClose}
+                  onDelete={() => this.handleDelete(openSnackbar)}
+                />
+              )}
+            </>
+            <div>
+              {
+                trainees.map((item) => (
+                  <ul key={item.id}>
+                    <li>
+                      <Link to={`${match.path}/${item.id}`}>{item.name}</Link>
+                    </li>
+                  </ul>
+                ))
+              }
+            </div>
+          </>
+        )}
+      </SnackbarContext.Consumer>
     );
   }
 }

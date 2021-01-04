@@ -7,6 +7,7 @@ import { PrivateLayout } from '../layouts';
 import {
   ChildrenDemo, InputDemo, TextFieldDemo, Trainee, NoMatch,
 } from '../pages';
+import { SnackBarProvider } from '../contexts/SnackBarProvider';
 
 const useStyles = makeStyles((theme) => ({
   navBody: {
@@ -18,17 +19,19 @@ const PrivateRoute = () => {
   const classes = useStyles();
   return (
     <>
-      <PrivateLayout />
-      <div className={classes.navBody}>
-        <Switch>
-          <Redirect exact path="/" to="/Trainee" />
-          <Route path="/Trainee" component={Trainee} />
-          <Route exact path="/TextField-Demo" component={TextFieldDemo} />
-          <Route exact path="/Input-Demo" component={InputDemo} />
-          <Route exact path="/Children-Demo" component={ChildrenDemo} />
-          <Route default component={NoMatch} />
-        </Switch>
-      </div>
+      <SnackBarProvider>
+        <PrivateLayout />
+        <div className={classes.navBody}>
+          <Switch>
+            <Redirect exact path="/" to="/Trainee" />
+            <Route path="/Trainee" component={Trainee} />
+            <Route exact path="/TextField-Demo" component={TextFieldDemo} />
+            <Route exact path="/Input-Demo" component={InputDemo} />
+            <Route exact path="/Children-Demo" component={ChildrenDemo} />
+            <Route default component={NoMatch} />
+          </Switch>
+        </div>
+      </SnackBarProvider>
     </>
   );
 };
