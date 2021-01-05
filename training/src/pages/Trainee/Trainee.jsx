@@ -4,10 +4,10 @@ import { Switch, Route } from 'react-router-dom';
 import TraineeList from './TraineeList';
 import TraineeDetail from './TraineeDetail';
 
-const Trainee = ({ match }) => (
+const Trainee = ({ match, history }) => (
   <Switch>
     <Route exact path={`${match.path}`}>
-      <TraineeList match={match} />
+      <TraineeList match={match} history={history} />
     </Route>
     <Route exact path={`${match.path}/:id`} component={TraineeDetail} />
   </Switch>
@@ -15,6 +15,7 @@ const Trainee = ({ match }) => (
 
 Trainee.propTypes = {
   match: PropTypes.objectOf(PropTypes.any).isRequired,
+  history: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 export default Trainee;

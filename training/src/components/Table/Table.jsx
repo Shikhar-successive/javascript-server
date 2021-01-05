@@ -28,7 +28,17 @@ const StyledTableRow = withStyles((theme) => ({
 
 export default function MyTable(props) {
   const {
-    id, data, column, order, orderBy, count, page, onPageChange, rowsPerPage, actions,
+    id,
+    data,
+    column,
+    order,
+    orderBy,
+    count,
+    page,
+    onPageChange,
+    rowsPerPage,
+    actions,
+    onSelect,
   } = props;
 
   const handleSort = (field) => () => {
@@ -40,11 +50,11 @@ export default function MyTable(props) {
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
         <TableHead>
-          <TableRow>
+          <TableRow key={`${id}`}>
             {
-              column.map((item) => (
+              column.map((item, index) => (
                 <>
-                  <TableCell key={`${item.label}`} align={item.align}>
+                  <TableCell key={`${item.field}${index + 1}`} align={item.align}>
                     <TableSortLabel
                       active={orderBy === item.field}
                       direction={order}
@@ -60,15 +70,15 @@ export default function MyTable(props) {
         </TableHead>
         <TableBody>
           {data.map((trainees) => (
-            <StyledTableRow key={trainees.id} hover={true}>
+            <StyledTableRow key={trainees.id} hover={true} onClick={() => onSelect(trainees)}>
               {
-                column.map((item) => (
+                column.map((item, index) => (
                   <>
-                    <TableCell key={`${trainees[id]}${item.field}`} align={item.align}>
+                    <TableCell key={`${trainees[id]}${item.field}${index + 1}`} align={item.align}>
                       {item.format ? item.format(trainees[item.field]) : trainees[item.field] }
-                      {item.label === 'Date' ? actions.map((action) => (
+                      {item.label === 'Date' ? actions.map((action, indexes) => (
                         <>
-                          <Button variant="text" onClick={() => action.handler(trainees)}>
+                          <Button key={`${trainees.email}${item.label}${indexes + 1}`} variant="text" onClick={() => action.handler(trainees)}>
                             {action.icon}
                           </Button>
                         </>
@@ -106,6 +116,7 @@ MyTable.propTypes = {
   count: PropTypes.number,
   page: PropTypes.number,
   actions: PropTypes.arrayOf(PropTypes.any),
+  onSelect: PropTypes.func.isRequired,
 };
 MyTable.defaultProps = {
   order: '',

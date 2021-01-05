@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import EditIcon from '@material-ui/icons/Edit';
@@ -85,10 +85,10 @@ class TraineeList extends Component {
     this.setState({ orderBy: field, order: tabOrder });
   }
 
-  // handleSelect = (data) => {
-  //   const { history } = this.props;
-  //   history.push(`/trainee/${data.id}`);
-  // }
+  handleSelect = (data) => {
+    const { history } = this.props;
+    history.push(`/trainee/${data.id}`);
+  }
 
   handlePageChange = (event, page) => {
     this.setState({ page });
@@ -104,7 +104,7 @@ class TraineeList extends Component {
       edit,
       traineeInfo,
     } = this.state;
-    const { match } = this.props;
+    // const { match } = this.props;
     // const classes = this.useStyles();
     return (
       <SnackbarContext.Consumer>
@@ -153,7 +153,7 @@ class TraineeList extends Component {
               orderBy={orderBy}
               order={order}
               onSort={this.handleSort}
-              // onSelect={this.handleSelect}
+              onSelect={this.handleSelect}
               count={100}
               page={page}
               onPageChange={this.handlePageChange}
@@ -176,17 +176,6 @@ class TraineeList extends Component {
                 />
               )}
             </>
-            <div>
-              {
-                trainees.map((item) => (
-                  <ul key={item.id}>
-                    <li>
-                      <Link to={`${match.path}/${item.id}`}>{item.name}</Link>
-                    </li>
-                  </ul>
-                ))
-              }
-            </div>
           </>
         )}
       </SnackbarContext.Consumer>
@@ -194,7 +183,8 @@ class TraineeList extends Component {
   }
 }
 TraineeList.propTypes = {
-  match: PropTypes.objectOf(PropTypes.any).isRequired,
+  // match: PropTypes.objectOf(PropTypes.any).isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default TraineeList;
