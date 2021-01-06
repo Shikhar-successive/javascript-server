@@ -16,20 +16,27 @@ const useStyles = makeStyles((theme) => ({
 
 const PrivateRoute = () => {
   const classes = useStyles();
+  if (localStorage.getItem('token')) {
+    return (
+      <>
+        <PrivateLayout />
+        <div className={classes.navBody}>
+          <Switch>
+            <Redirect exact path="/" to="/Trainee" />
+            <Route path="/Trainee" component={Trainee} />
+            <Route exact path="/TextField-Demo" component={TextFieldDemo} />
+            <Route exact path="/Input-Demo" component={InputDemo} />
+            <Route exact path="/Children-Demo" component={ChildrenDemo} />
+            <Route default component={NoMatch} />
+          </Switch>
+        </div>
+      </>
+    );
+  }
   return (
-    <>
-      <PrivateLayout />
-      <div className={classes.navBody}>
-        <Switch>
-          <Redirect exact path="/" to="/Trainee" />
-          <Route path="/Trainee" component={Trainee} />
-          <Route exact path="/TextField-Demo" component={TextFieldDemo} />
-          <Route exact path="/Input-Demo" component={InputDemo} />
-          <Route exact path="/Children-Demo" component={ChildrenDemo} />
-          <Route default component={NoMatch} />
-        </Switch>
-      </div>
-    </>
+    <Switch>
+      <Redirect to="/login" />
+    </Switch>
   );
 };
 export default PrivateRoute;

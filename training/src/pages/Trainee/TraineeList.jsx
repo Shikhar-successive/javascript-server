@@ -9,6 +9,7 @@ import trainees from './Data/trainee';
 import { Table } from '../../components';
 import { getFormattedDate } from '../../libs/utils/getFormattedDate';
 import { SnackbarContext } from '../../contexts/SnackBarProvider/SnackBarProvider';
+import { callApi } from '../../libs/utils';
 
 const asend = 'asc';
 const dsend = 'desc';
@@ -23,20 +24,42 @@ class TraineeList extends Component {
       edit: false,
       deleteDialog: false,
       traineeInfo: {},
+      spinner: false,
     };
   }
 
   onOpen = () => {
     this.setState({ open: true });
+    console.log(localStorage.getItem('token'));
   };
 
   onCloseEvent = () => {
     this.setState({ open: false });
   };
 
-  handleSubmit = (openSnackbar) => {
-    openSnackbar('Trainee Created Successfully', 'success');
-    this.onCloseEvent();
+  handleSubmit = async (openSnackbar, state) => {
+    const userInfo = {
+      name: state.name,
+      email: state.email,
+      password: state.password,
+      role: 'Trainee',
+      createdBy: 'Admin',
+    };
+    this.setState({
+      spinner: true,
+    });
+    const user = await callApi(userInfo, 'post', '/trainee/create');
+    if (user.data) {
+      console.log(user);
+      openSnackbar('Trainee Creadted Successfully', 'success');
+      this.onCloseEvent();
+    } else {
+      openSnackbar('Trainee Not Created', 'error');
+    }
+
+    // if ()
+    // openSnackbar('Trainee Created Successfully', 'success');
+    // this.onCloseEvent();
   }
 
   editDialogOpen = (item) => {
@@ -94,6 +117,12 @@ class TraineeList extends Component {
     this.setState({ page });
   }
 
+  getTrainees = async () => {
+    const trainee = await callApi({}, 'get', '/trainee/getall');
+    Object.values(trainee.data.records[0].data.map((item) => (console.log(item))));
+    return trainee;
+  }
+
   render() {
     const {
       open,
@@ -103,6 +132,7 @@ class TraineeList extends Component {
       page,
       edit,
       traineeInfo,
+      spinner,
     } = this.state;
     // const { match } = this.props;
     // const classes = this.useStyles();
@@ -117,7 +147,8 @@ class TraineeList extends Component {
               <AddDialog
                 open={open}
                 onClose={this.onCloseEvent}
-                onSubmit={() => this.handleSubmit(openSnackbar)}
+                onSubmit={(state) => this.handleSubmit(openSnackbar, state)}
+                loading={spinner}
               />
             </div>
             <Table

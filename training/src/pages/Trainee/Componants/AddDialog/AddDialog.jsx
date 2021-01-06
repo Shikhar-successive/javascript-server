@@ -10,6 +10,7 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import EmailIcon from '@material-ui/icons/Email';
 import PersonIcon from '@material-ui/icons/Person';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import * as Yup from 'yup';
 
 class AddDialog extends Component {
@@ -113,26 +114,16 @@ class AddDialog extends Component {
     return null;
   }
 
-  printState = () => {
-    const {
-      name, email, password,
-    } = this.state;
-    const data = {
-      name: `${name}`,
-      email: `${email}`,
-      password: `${password}`,
-    };
-    // eslint-disable-next-line no-console
-    const { onSubmit } = this.props;
-    onSubmit();
-    console.log(data);
+  onCreate = async () => {
+
   }
 
   render() {
     const {
-      name, email, password, confirmPassword,
+      name, email, password, confirmPassword, spinner,
     } = this.state;
-    const { open, onClose } = this.props;
+    const state = { name, email, password };
+    const { open, onClose, onSubmit } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
         <DialogTitle style={{ alignContent: 'start' }}>Add Trainee</DialogTitle>
@@ -214,7 +205,12 @@ class AddDialog extends Component {
         </div>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button disabled={this.hasError() || !this.isTouched()} color="primary" variant="contained" onClick={this.printState}>Submit</Button>
+          <Button disabled={this.hasError() || !this.isTouched() || spinner} color="primary" variant="contained" onClick={() => onSubmit(state)}>
+            {
+              spinner && <CircularProgress size="1.5rem" />
+            }
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     );

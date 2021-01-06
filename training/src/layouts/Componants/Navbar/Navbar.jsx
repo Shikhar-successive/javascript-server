@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 class Navbar extends Component {
   onLogoutHandler = () => {
+    console.log('inside logout');
     localStorage.removeItem('token');
   }
 
@@ -37,7 +38,7 @@ class Navbar extends Component {
             </Button>
           </Link>
           <Link to="/login">
-            <Button variant="contained" color="primary" onClick={this.onLogoutHandler}>
+            <Button variant="contained" color="primary" onClick={() => this.onLogoutHandler()}>
               logout
             </Button>
           </Link>

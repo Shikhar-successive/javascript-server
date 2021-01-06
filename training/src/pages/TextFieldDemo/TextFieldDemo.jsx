@@ -25,13 +25,11 @@ class TextFieldDemo extends Component {
         <p>A Valid Input</p>
         <TextField
           value="Accessible"
-          disabled={false}
         />
         <p>An Input with Error</p>
         <TextField
           value="101"
           error="Could not be greater than"
-          disabled={false}
           pattern="[A-Za-z]+"
         />
       </>

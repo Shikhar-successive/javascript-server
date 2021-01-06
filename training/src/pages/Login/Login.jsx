@@ -9,7 +9,7 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import callApi from '../../libs/utils/api';
+import { callApi } from '../../libs/utils';
 import { SnackbarContext } from '../../contexts/SnackBarProvider/SnackBarProvider';
 
 class Login extends Component {
@@ -93,19 +93,20 @@ class Login extends Component {
 
   onLogin = async (openSnackbar) => {
     const { email, password } = this.state;
+    const userInfo = { email, password };
     this.setState({
       spinner: true,
       btnDisable: true,
     });
-    const user = await callApi(email, password);
-    console.log(user);
+    const user = await callApi(userInfo, 'post', '/user/login');
+    console.log(user.Data);
     // console.log(user.data.Data);
     if (user.Data) {
       // console.log('inside USERR');
       this.setState({
         spinner: false,
       });
-      localStorage.setItem('token', user);
+      localStorage.setItem('token', user.Data);
       const { history } = this.props;
       history.push('/Trainee');
     } else {

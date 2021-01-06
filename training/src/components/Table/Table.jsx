@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-boolean-value */
 import React from 'react';
 import {
-  Button,
+  // Button,
   Table,
   TableBody,
   TableCell,
@@ -10,9 +10,11 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  IconButton,
 } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
+
 import PropTypes from 'prop-types';
 
 const StyledTableRow = withStyles((theme) => ({
@@ -70,20 +72,20 @@ export default function MyTable(props) {
         </TableHead>
         <TableBody>
           {data.map((trainees) => (
-            <StyledTableRow key={trainees.id} hover={true} onClick={() => onSelect(trainees)}>
+            <StyledTableRow key={trainees.id} hover={true}>
               {
                 column.map((item, index) => (
                   <>
-                    <TableCell key={`${trainees[id]}${item.field}${index + 1}`} align={item.align}>
+                    <TableCell component="td" key={`${trainees[id]}${item.field}${index + 1}`} align={item.align} onClick={() => onSelect(trainees)}>
                       {item.format ? item.format(trainees[item.field]) : trainees[item.field] }
-                      {item.label === 'Date' ? actions.map((action, indexes) => (
-                        <>
-                          <Button key={`${trainees.email}${item.label}${indexes + 1}`} variant="text" onClick={() => action.handler(trainees)}>
-                            {action.icon}
-                          </Button>
-                        </>
-                      )) : '' }
                     </TableCell>
+                    {item.label === 'Date' ? actions.map((action, indexes) => (
+                      <>
+                        <IconButton component="td" key={`${trainees.email}${item.label}${indexes + 1}`} variant="text" onClick={() => action.handler(trainees)}>
+                          {action.icon}
+                        </IconButton>
+                      </>
+                    )) : null }
                   </>
                 ))
               }
