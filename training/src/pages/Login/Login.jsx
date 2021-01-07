@@ -100,9 +100,7 @@ class Login extends Component {
     });
     const user = await callApi(userInfo, 'post', '/user/login');
     console.log(user.Data);
-    // console.log(user.data.Data);
     if (user.Data) {
-      // console.log('inside USERR');
       this.setState({
         spinner: false,
       });
@@ -110,12 +108,11 @@ class Login extends Component {
       const { history } = this.props;
       history.push('/Trainee');
     } else {
-      // console.log('insude else');
       this.setState({
         btnDisable: false,
         spinner: false,
       });
-      openSnackbar(user, 'error');
+      openSnackbar(user.response.data.message, 'error');
     }
   }
 

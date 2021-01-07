@@ -30,7 +30,7 @@ const StyledTableRow = withStyles((theme) => ({
 
 export default function MyTable(props) {
   const {
-    id,
+    // id,
     data,
     column,
     order,
@@ -47,67 +47,73 @@ export default function MyTable(props) {
     const { onSort } = props;
     onSort(field);
   };
+  // console.log(data, '========================');
 
-  return (
-    <TableContainer component={Paper}>
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow key={`${id}`}>
-            {
-              column.map((item, index) => (
-                <>
-                  <TableCell key={`${item.field}${index + 1}`} align={item.align}>
-                    <TableSortLabel
-                      active={orderBy === item.field}
-                      direction={order}
-                      onClick={handleSort(item.field)}
-                    >
-                      {item.label}
-                    </TableSortLabel>
-                  </TableCell>
-                </>
-              ))
-            }
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((trainees) => (
-            <StyledTableRow key={trainees.id} hover={true}>
+  if (data) {
+    return (
+      <TableContainer component={Paper}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
               {
-                column.map((item, index) => (
+                column.map((item) => (
                   <>
-                    <TableCell component="td" key={`${trainees[id]}${item.field}${index + 1}`} align={item.align} onClick={() => onSelect(trainees)}>
-                      {item.format ? item.format(trainees[item.field]) : trainees[item.field] }
+                    <TableCell key={item.label} align={item.align}>
+                      <TableSortLabel
+                        active={orderBy === item.field}
+                        direction={order}
+                        onClick={handleSort(item.field)}
+                      >
+                        {item.label}
+                      </TableSortLabel>
                     </TableCell>
-                    {item.label === 'Date' ? actions.map((action, indexes) => (
-                      <>
-                        <IconButton component="td" key={`${trainees.email}${item.label}${indexes + 1}`} variant="text" onClick={() => action.handler(trainees)}>
-                          {action.icon}
-                        </IconButton>
-                      </>
-                    )) : null }
                   </>
                 ))
               }
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <TablePagination
-        rowsPerPageOptions={[]}
-        component="div"
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        backIconButtonProps={{ 'aria-label': 'Previous Page' }}
-        nextIconButtonProps={{ 'aria-label': 'Next Page' }}
-        onChangePage={onPageChange}
-      />
-    </TableContainer>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Object.values(data).map((trainees) => (
+              <StyledTableRow key={trainees.originalId} hover={true}>
+                {
+                  column.map((item) => (
+                    <>
+                      <TableCell key={`${trainees.originalId}`} align={item.align} onClick={() => onSelect(trainees)}>
+                        {item.format ? item.format(trainees[item.field]) : trainees[item.field] }
+                      </TableCell>
+                      {item.label === 'Date' ? actions.map((action) => (
+                        <>
+                          <IconButton component="td" key={`${trainees.email}`} variant="text" onClick={() => action.handler(trainees)}>
+                            {action.icon}
+                          </IconButton>
+                        </>
+                      )) : null }
+                    </>
+                  ))
+                }
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[]}
+          component="div"
+          count={count}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          backIconButtonProps={{ 'aria-label': 'Previous Page' }}
+          nextIconButtonProps={{ 'aria-label': 'Next Page' }}
+          onChangePage={onPageChange}
+        />
+      </TableContainer>
+    );
+  }
+  return (
+    <h1>OOPS! No Data</h1>
   );
 }
 MyTable.propTypes = {
-  id: PropTypes.string.isRequired,
+  // id: PropTypes.string.isRequired,
   column: PropTypes.arrayOf(Object).isRequired,
   data: PropTypes.arrayOf(Object).isRequired,
   order: PropTypes.string,

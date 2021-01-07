@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { AddDialog, EditDialog, DeleteDialog } from './Componants';
-import trainees from './Data/trainee';
+// import trainees from './Data/trainee';
 import { Table } from '../../components';
 import { getFormattedDate } from '../../libs/utils/getFormattedDate';
 import { SnackbarContext } from '../../contexts/SnackBarProvider/SnackBarProvider';
@@ -25,7 +25,18 @@ class TraineeList extends Component {
       deleteDialog: false,
       traineeInfo: {},
       spinner: false,
+      data: [],
+      // table: false,
     };
+    // this.getTrainees = this.getTrainees.bind(this);
+    // this.getTrainees();
+  }
+
+  async componentDidMount() {
+    console.log('inside GETtraine ----');
+    const trainee = await callApi({}, 'get', '/trainee/getall');
+    const traineeData = trainee.data.records[0].data;
+    this.setState({ data: traineeData });
   }
 
   onOpen = () => {
@@ -42,19 +53,21 @@ class TraineeList extends Component {
       name: state.name,
       email: state.email,
       password: state.password,
-      role: 'Trainee',
+      role: 'trainee',
       createdBy: 'Admin',
     };
     this.setState({
       spinner: true,
     });
     const user = await callApi(userInfo, 'post', '/trainee/create');
+    console.log(user, 'TTTTTTTTTTTTTTTTT');
     if (user.data) {
       console.log(user);
       openSnackbar('Trainee Creadted Successfully', 'success');
       this.onCloseEvent();
-    } else {
-      openSnackbar('Trainee Not Created', 'error');
+      this.getTrainees();
+    } else if (user.response.status) {
+      openSnackbar(user.response.data.message, 'error');
     }
 
     // if ()
@@ -109,8 +122,10 @@ class TraineeList extends Component {
   }
 
   handleSelect = (data) => {
+    console.log(data, 'trainee data');
+    localStorage.setItem('traineeDetail', JSON.stringify(data));
     const { history } = this.props;
-    history.push(`/trainee/${data.id}`);
+    history.push(`/trainee/${data.originalId}`);
   }
 
   handlePageChange = (event, page) => {
@@ -118,9 +133,10 @@ class TraineeList extends Component {
   }
 
   getTrainees = async () => {
+    console.log('inside GETtraine ----');
     const trainee = await callApi({}, 'get', '/trainee/getall');
-    Object.values(trainee.data.records[0].data.map((item) => (console.log(item))));
-    return trainee;
+    const traineeData = trainee.data.records[0].data;
+    this.setState({ data: traineeData });
   }
 
   render() {
@@ -133,7 +149,13 @@ class TraineeList extends Component {
       edit,
       traineeInfo,
       spinner,
+      data,
+      // table,
     } = this.state;
+    // if (table === false) {
+    //   this.fetchData();
+    // }
+    // this.getTrainees();
     // const { match } = this.props;
     // const classes = this.useStyles();
     return (
@@ -153,7 +175,7 @@ class TraineeList extends Component {
             </div>
             <Table
               id="id"
-              data={trainees}
+              data={data}
               column={[
                 {
                   field: 'name',

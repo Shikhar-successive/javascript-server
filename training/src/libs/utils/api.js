@@ -13,10 +13,11 @@ export default async function callApi(userInfo, request, route) {
     try {
       const res = await axios[request](`${config.url}${route}`, userInfo, config);
       // console.log(res.data.Data);
+      console.log(res, '###############');
       return res.data;
     } catch (error) {
-      console.log(error);
-      return error.message;
+      console.log(error.response.data.message, '****************');
+      return error;
     }
   }
   if (request === 'get') {
