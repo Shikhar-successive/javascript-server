@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-// import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { AddDialog, EditDialog, DeleteDialog } from './Componants';
-// import trainees from './Data/trainee';
 import { Table } from '../../components';
 import { getFormattedDate } from '../../libs/utils/getFormattedDate';
 import { SnackbarContext } from '../../contexts/SnackBarProvider/SnackBarProvider';
@@ -26,17 +24,20 @@ class TraineeList extends Component {
       traineeInfo: {},
       spinner: false,
       data: [],
-      // table: false,
     };
-    // this.getTrainees = this.getTrainees.bind(this);
-    // this.getTrainees();
   }
 
   async componentDidMount() {
     console.log('inside GETtraine ----');
     const trainee = await callApi({}, 'get', '/trainee/getall');
-    const traineeData = trainee.data.records[0].data;
-    this.setState({ data: traineeData });
+    if (trainee.data) {
+      const traineeData = trainee.data.records[0].data;
+      this.setState({ data: traineeData });
+    } else if (localStorage.getItem('token') === null) {
+      const { history } = this.props;
+      history.push('/login');
+    }
+    console.log(trainee);
   }
 
   onOpen = () => {
@@ -67,12 +68,17 @@ class TraineeList extends Component {
       this.onCloseEvent();
       this.getTrainees();
     } else if (user.response.status) {
-      openSnackbar(user.response.data.message, 'error');
+      if (localStorage.getItem('token') === null) {
+        this.onCloseEvent();
+        openSnackbar(user.response.data.message, 'error');
+        const { history } = this.props;
+        history.push('/login');
+      }
+      if (user.response.status === 403) {
+        openSnackbar(user.response.data.message, 'error');
+      }
     }
-
-    // if ()
-    // openSnackbar('Trainee Created Successfully', 'success');
-    // this.onCloseEvent();
+    return '';
   }
 
   editDialogOpen = (item) => {
@@ -121,9 +127,15 @@ class TraineeList extends Component {
     this.setState({ orderBy: field, order: tabOrder });
   }
 
-  handleSelect = (data) => {
+  handleSelect = async (openSnackbar, data) => {
     console.log(data, 'trainee data');
     localStorage.setItem('traineeDetail', JSON.stringify(data));
+    await this.getTrainees();
+    if (localStorage.getItem('token') === null) {
+      openSnackbar('token expired', 'error');
+      const { history } = this.props;
+      history.push('/login');
+    }
     const { history } = this.props;
     history.push(`/trainee/${data.originalId}`);
   }
@@ -135,8 +147,7 @@ class TraineeList extends Component {
   getTrainees = async () => {
     console.log('inside GETtraine ----');
     const trainee = await callApi({}, 'get', '/trainee/getall');
-    const traineeData = trainee.data.records[0].data;
-    this.setState({ data: traineeData });
+    return trainee;
   }
 
   render() {
@@ -150,14 +161,7 @@ class TraineeList extends Component {
       traineeInfo,
       spinner,
       data,
-      // table,
     } = this.state;
-    // if (table === false) {
-    //   this.fetchData();
-    // }
-    // this.getTrainees();
-    // const { match } = this.props;
-    // const classes = this.useStyles();
     return (
       <SnackbarContext.Consumer>
         {(openSnackbar) => (
@@ -206,7 +210,7 @@ class TraineeList extends Component {
               orderBy={orderBy}
               order={order}
               onSort={this.handleSort}
-              onSelect={this.handleSelect}
+              onSelect={(detail) => this.handleSelect(openSnackbar, detail)}
               count={100}
               page={page}
               onPageChange={this.handlePageChange}
@@ -236,7 +240,6 @@ class TraineeList extends Component {
   }
 }
 TraineeList.propTypes = {
-  // match: PropTypes.objectOf(PropTypes.any).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
 };
 

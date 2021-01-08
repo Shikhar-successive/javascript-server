@@ -11,6 +11,7 @@ import {
   TableRow,
   TableSortLabel,
   IconButton,
+  Typography,
 } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
@@ -47,9 +48,9 @@ export default function MyTable(props) {
     const { onSort } = props;
     onSort(field);
   };
-  // console.log(data, '========================');
+  // console.log(data.length, '========================');
 
-  if (data) {
+  if (data.length) {
     return (
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
@@ -109,7 +110,7 @@ export default function MyTable(props) {
     );
   }
   return (
-    <h1>OOPS! No Data</h1>
+    <Typography variant="h3" color="primary" align="center">OOPS! No Data</Typography>
   );
 }
 MyTable.propTypes = {
