@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import { TextField, Slider } from '../../components';
 
 class TextFieldDemo extends Component {
@@ -37,7 +36,6 @@ class TextFieldDemo extends Component {
           disabled={false}
           pattern="[A-Za-z]+"
         />
-        <p color="red">Could net be greater than</p>
       </>
     );
   }
