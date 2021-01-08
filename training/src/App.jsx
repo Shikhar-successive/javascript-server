@@ -1,9 +1,13 @@
 import React from 'react';
-import { InputDemo } from './pages';
+import { ChildrenDemo } from './pages';
+import { theme } from './theme';
 
 function App() {
+  const myTheme = theme();
   return (
-    <InputDemo />
+    <div className={myTheme.root}>
+      <ChildrenDemo />
+    </div>
   );
 }
 export default App;
