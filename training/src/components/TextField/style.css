@@ -1,0 +1,10 @@
+
+.style_disable{
+    width: 100%;
+    background-color: lightslategray;
+}
+
+.style_valid{
+  width: 100%;
+  border: solid orange;
+}
