@@ -95,46 +95,34 @@ class InputDemo extends Component {
     console.log(compError, '-------error');
   }
 
-  componantErrors = () => {
-    let returnVal = true;
-    const arr = [];
+  isTouched = () => {
+    const { touched } = this.state;
+    // console.log(Object.keys(touched), '=============length');
+    return Object.keys(touched).length !== 0;
+  }
+
+  getError = (componant) => {
     const {
-      error, cricket, football,
+      name,
+      sport,
+      football,
+      cricket,
     } = this.state;
-    // if (sport.toUpperCase() === Object.keys(error))
-    // console.log(Object.keys(error).length !== 0, '>>>>>>>>>>>>>>componantErrors');
-    if (Object.keys(error).includes('name')) {
-      Object.keys(error).forEach((item) => {
-        // console.log(typeof item, '********************** AAAAAAAAAitem');
-        arr.push(item);
-        console.log(arr, '----------------AAAAAAAAAARRRRRRRR');
-        console.log(arr.includes('name'), '====================condd');
-        if (!arr.includes('name')) {
-          returnVal = false;
-        }
-        // console.log(item === 'name', '********************** item');
-        return true;
-      });
+    const data = {
+      name: `${name}`,
+      sport: `${sport}`,
+      role: `${football}` || `${cricket}`,
+    };
+    const { touched } = this.state;
+    if (touched[componant] && this.hasError) {
+      // console.log(componant, '>>>>>>>>>>>>>>>>>>>>>>> GETERROR');
+      try {
+        this.schema.validateSyncAt(componant, data);
+      } catch (err) {
+        return err.message;
+      }
     }
-    if (cricket) {
-      constants.cricketRole.forEach((item) => {
-        if (item.value.includes(cricket)) {
-          console.log(cricket, '^^^^^^^^^^^^^^^^^^^^^^^^^^^6');
-          returnVal = false;
-        }
-        return true;
-      });
-    }
-    if (football) {
-      constants.cricketRole.forEach((item) => {
-        if (item.label.includes(football)) {
-          console.log(football, '^^^^^^^^^^^^^^^^^^^^^^^^^^^6');
-          returnVal = false;
-        }
-        return true;
-      });
-    }
-    return returnVal;
+    return null;
   }
 
   componantIsTouched = () => {
