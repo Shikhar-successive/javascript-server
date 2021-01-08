@@ -10,8 +10,6 @@ export const cricketRole = [
   { label: 'Cricket', value: 'Bowler' },
   { label: 'Cricket', value: 'All-Rounder' }];
 export const footballRole = [
-  { label: 'Football', value: 'Goal-keeper' },
   { label: 'Football', value: 'Defender' },
-  { label: 'Football', value: 'Mid-Fielder' },
   { label: 'Football', value: 'Attacker' }];
 export const defaultText = 'Select';

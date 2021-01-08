@@ -1,31 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './style.css';
+import style from './style';
 
 class SelectField extends Component {
   render() {
     const {
-      value, onChange, options, defaultText,
+      value, onChange, options, defaultText, onBlur, error,
     } = this.props;
-    console.log(options[1].label);
+    // console.log(options[1].label);
     return (
-      <select className="style_select" name="sport" id="sport" onChange={onChange} value={value}>
-        <option value="">
-          {' '}
-          {defaultText}
-          {' '}
-        </option>
-        <option value={options[0].label}>
-          {' '}
-          {options[0].value}
-          {' '}
-        </option>
-        <option value={options[1].label}>
-          {' '}
-          {options[1].value}
-          {' '}
-        </option>
-      </select>
+      <>
+        <select style={style.text} name="sport" id="sport" onChange={onChange} value={value} onBlur={onBlur}>
+          <option value="">{defaultText}</option>
+          {
+            options.map((option) => (
+              <option value={option.label} key={option.label}>{option.value}</option>
+            ))
+          }
+        </select>
+        {error ? <div style={{ color: 'red' }}>{error}</div> : ''}
+      </>
     );
   }
 }
@@ -35,6 +29,8 @@ SelectField.propTypes = {
   onChange: PropTypes.func,
   options: PropTypes.instanceOf(Array),
   defaultText: PropTypes.string,
+  onBlur: PropTypes.func,
+  error: PropTypes.string,
 };
 
 SelectField.defaultProps = {
@@ -42,5 +38,7 @@ SelectField.defaultProps = {
   onChange: PropTypes.func,
   options: PropTypes.instanceOf(Array),
   defaultText: PropTypes.string,
+  onBlur: PropTypes.func,
+  error: PropTypes.string,
 };
 export default SelectField;
