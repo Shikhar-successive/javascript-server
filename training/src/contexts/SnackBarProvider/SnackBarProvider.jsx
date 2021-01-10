@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CustomSnackBar from './SnackBar';
 
-export const SnackbarContext = React.createContext(() => console.log('default'));
+export const SnackbarContext = React.createContext();
 
 class SnackBarProvider extends Component {
   constructor(props) {
@@ -16,14 +16,11 @@ class SnackBarProvider extends Component {
   }
 
   openSnackbar = (message, variant) => {
-    // const { isOpen } = this.state;
     this.setState({
       isOpen: true,
       message,
       variant,
     });
-    console.log('Snack open');
-    console.log(variant);
   };
 
   closeSnackbar = (reason) => {

@@ -34,7 +34,6 @@ class TraineeList extends Component {
   }
 
   async componentDidMount() {
-    console.log('inside componentDidMount ----');
     const limit = 5;
     const { page } = this.state;
     const skip = page * limit;
@@ -58,7 +57,6 @@ class TraineeList extends Component {
 
   onOpen = () => {
     this.setState({ open: true });
-    console.log(localStorage.getItem('token'));
   };
 
   onCloseEvent = () => {
@@ -77,15 +75,17 @@ class TraineeList extends Component {
       spinner: true,
     });
     const user = await callApi(userInfo, 'post', '/trainee/create');
-    console.log(user, 'TTTTTTTTTTTTTTTTT');
     if (user.data) {
-      console.log(user);
       openSnackbar('Trainee Creadted Successfully', 'success');
       this.setState({
         spinner: false,
       }, () => this.componentDidMount());
       this.onCloseEvent();
       this.getTrainees();
+    } else if (user === 'Network Error') {
+      openSnackbar('Network Error', 'error');
+      this.setState({ spinner: false });
+      this.onCloseEvent();
     } else if (user.response.status) {
       if (localStorage.getItem('token') === null) {
         this.onCloseEvent();
@@ -95,6 +95,11 @@ class TraineeList extends Component {
       }
       if (user.response.status === 403) {
         openSnackbar(user.response.data.message, 'error');
+        this.setState({
+          spinner: false,
+        }, () => this.componentDidMount());
+        this.onCloseEvent();
+        this.getTrainees();
       }
     }
     return '';
@@ -110,10 +115,45 @@ class TraineeList extends Component {
     this.setState({ edit: false });
   };
 
-  handleEdit = (openSnackbar, item) => {
-    openSnackbar('Trainee Updated Successfully', 'success');
-    console.log(item, '=========');
-    this.editDialogClose();
+  handleEdit = async (openSnackbar, state) => {
+    const userInfo = {
+      originalId: state.traineeId,
+      name: state.name,
+      email: state.email,
+      role: 'trainee',
+      updatedBy: 'Admin',
+    };
+    this.setState({
+      spinner: true,
+    });
+    const updateUser = await callApi(userInfo, 'put', '/trainee/update');
+    if (updateUser.data) {
+      openSnackbar('Trainee Updated Successfully', 'success');
+      this.setState({
+        spinner: false,
+      }, () => this.componentDidMount());
+      this.editDialogClose();
+      this.getTrainees();
+    } else if (updateUser === 'Network Error') {
+      openSnackbar('Network Error', 'error');
+      this.setState({ spinner: false });
+      this.editDialogClose();
+    } else if (updateUser.response.status) {
+      if (localStorage.getItem('token') === null) {
+        this.onCloseEvent();
+        openSnackbar(updateUser.response.data.message, 'error');
+        const { history } = this.props;
+        history.push('/login');
+      } else if (updateUser.response.status === 403) {
+        openSnackbar(updateUser.response.data.message, 'error');
+        this.setState({
+          spinner: false,
+        }, () => this.componentDidMount());
+        this.editDialogClose();
+        this.getTrainees();
+      }
+    }
+    return '';
   }
 
   deleteDialogOpen = (item) => {
@@ -126,15 +166,40 @@ class TraineeList extends Component {
     this.setState({ deleteDialog: false });
   };
 
-  handleDelete = (openSnackbar) => {
+  handleDelete = async (openSnackbar) => {
+    this.setState({
+      spinner: true,
+    });
     const { traineeInfo } = this.state;
     if (traineeInfo.createdAt >= '2019-02-14') {
-      openSnackbar('Trainee Deleted Successfully', 'success');
-    } else {
-      openSnackbar('Trainee cannot be Deleted', 'error');
+      const deleteRec = await callApi({}, 'delete', `/trainee/delete/${traineeInfo.originalId}`);
+      if (deleteRec.data) {
+        openSnackbar(deleteRec.message, 'success');
+        this.setState({
+          spinner: false,
+        }, () => this.componentDidMount());
+        this.deleteDialogClose();
+        this.getTrainees();
+      } else if (deleteRec === 'Network Error') {
+        openSnackbar('Network Error', 'error');
+        this.setState({ spinner: false });
+        this.deleteDialogClose();
+      } else if (deleteRec.response.status) {
+        if (localStorage.getItem('token') === null) {
+          this.onCloseEvent();
+          openSnackbar(deleteRec.response.data.message, 'error');
+          const { history } = this.props;
+          history.push('/login');
+        } else if (deleteRec.response.status === 403) {
+          openSnackbar(deleteRec.response.data.message, 'error');
+          this.setState({
+            spinner: false,
+          }, () => this.componentDidMount());
+          this.deleteDialogClose();
+          this.getTrainees();
+        }
+      }
     }
-    console.log(traineeInfo);
-    this.deleteDialogClose();
   }
 
   handleSort = (field) => {
@@ -147,7 +212,6 @@ class TraineeList extends Component {
   }
 
   handleSelect = async (openSnackbar, data) => {
-    console.log(data, 'trainee data');
     localStorage.setItem('traineeDetail', JSON.stringify(data));
     const response = await this.getTrainees();
     if (response === 'Network Error') {
@@ -167,7 +231,6 @@ class TraineeList extends Component {
   }
 
   getTrainees = async () => {
-    console.log('inside GETtraine ----');
     const trainee = await callApi({}, 'get', '/trainee/getall');
     return trainee;
   }
@@ -247,8 +310,9 @@ class TraineeList extends Component {
                   details={traineeInfo}
                   open={edit}
                   onClose={this.editDialogClose}
-                  onSubmit={() => this.handleEdit(openSnackbar)}
+                  onSubmit={(state) => this.handleEdit(openSnackbar, state)}
                   item={this.selectedItem}
+                  loading={spinner}
                 />
               )}
               { deleteDialog && (
@@ -256,6 +320,7 @@ class TraineeList extends Component {
                   open={deleteDialog}
                   onClose={this.deleteDialogClose}
                   onDelete={() => this.handleDelete(openSnackbar)}
+                  loading={spinner}
                 />
               )}
             </>

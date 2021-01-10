@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 
 class Navbar extends Component {
   onLogoutHandler = () => {
-    console.log('inside logout');
     localStorage.removeItem('token');
   }
 

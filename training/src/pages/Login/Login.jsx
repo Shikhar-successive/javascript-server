@@ -51,7 +51,6 @@ class Login extends Component {
       password: `${password}`,
     };
     try {
-      // console.log(!this.schema.validateSync(this.state), '??????????????? Hserror');
       return !this.schema.validateSync(data);
     } catch (err) {
       return true;
@@ -61,12 +60,10 @@ class Login extends Component {
   onToched = (componant) => {
     const { touched } = this.state;
     this.setState({ touched: { ...touched, [componant]: true } });
-    // console.log(this.state, '------------------ONTOUCHED');
   }
 
   isTouched = () => {
     const { touched } = this.state;
-    // console.log(Object.keys(touched), '=============length');
     return Object.keys(touched).length !== 0;
   }
 
@@ -81,7 +78,6 @@ class Login extends Component {
     };
     const { touched } = this.state;
     if (touched[componant] && this.hasError) {
-      // console.log(componant, '>>>>>>>>>>>>>>>>>>>>>>> GETERROR');
       try {
         this.schema.validateSyncAt(componant, data);
       } catch (err) {
@@ -99,7 +95,6 @@ class Login extends Component {
       btnDisable: true,
     });
     const user = await callApi(userInfo, 'post', '/user/login');
-    console.log(user);
     if (user === 'Network Error') {
       this.setState({
         spinner: false,

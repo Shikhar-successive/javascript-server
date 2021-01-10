@@ -14,7 +14,6 @@ class TraineeDetail extends Component {
   render() {
     const { history } = this.props;
     const traineeData = JSON.parse(localStorage.getItem('traineeDetail'));
-    console.log(traineeData, '--------------------localStorage');
     if (traineeData) {
       return (
         <>

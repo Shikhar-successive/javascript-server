@@ -112,10 +112,12 @@ class AddDialog extends Component {
 
   render() {
     const {
-      name, email, password, confirmPassword, spinner,
+      name, email, password, confirmPassword,
     } = this.state;
     const state = { name, email, password };
-    const { open, onClose, onSubmit } = this.props;
+    const {
+      open, onClose, onSubmit, loading,
+    } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
         <DialogTitle style={{ alignContent: 'start' }}>Add Trainee</DialogTitle>
@@ -197,9 +199,9 @@ class AddDialog extends Component {
         </div>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button disabled={this.hasError() || !this.isTouched() || spinner} color="primary" variant="contained" onClick={() => onSubmit(state)}>
+          <Button disabled={this.hasError() || !this.isTouched() || loading} color="primary" variant="contained" onClick={() => onSubmit(state)}>
             {
-              spinner && <CircularProgress size="1.5rem" />
+              loading && <CircularProgress size="1.5rem" />
             }
             Submit
           </Button>
@@ -212,6 +214,7 @@ AddDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 AddDialog.defaultProps = {
   open: PropTypes.bool,

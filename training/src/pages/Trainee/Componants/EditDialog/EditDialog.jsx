@@ -10,6 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import EmailIcon from '@material-ui/icons/Email';
 import PersonIcon from '@material-ui/icons/Person';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import * as Yup from 'yup';
 
 class EditDialog extends Component {
@@ -83,32 +84,23 @@ class EditDialog extends Component {
     return null;
   }
 
-  printState = () => {
-    const {
-      name, email,
-    } = this.state;
-    const data = {
-      name: `${name}`,
-      email: `${email}`,
-    };
-    const { onSubmit } = this.props;
-    onSubmit();
-    console.log(data);
-  }
-
   render() {
+    const { name, email } = this.state;
     const {
       open,
       onClose,
       details,
+      onSubmit,
+      loading,
     } = this.props;
+    const traineeId = details.originalId;
+    const state = { name, email, traineeId };
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
         <DialogTitle style={{ alignContent: 'start' }}>Edit Trainee</DialogTitle>
         <DialogContentText style={{ paddingLeft: '25px' }}>Enter your trainee details</DialogContentText>
         <div style={{ paddingLeft: '12px', paddingTop: '8px', paddingRight: '12px' }}>
           <TextField
-            // value={name}
             defaultValue={details.name}
             error={this.getError('name')}
             helperText={this.getError('name')}
@@ -148,7 +140,12 @@ class EditDialog extends Component {
         </div>
         <DialogActions>
           <Button onClick={onClose} color="primary">Cancel</Button>
-          <Button disabled={this.hasError() || !this.isTouched()} onClick={this.printState} color="primary" variant="contained">Submit</Button>
+          <Button disabled={this.hasError() || !this.isTouched() || loading} onClick={() => onSubmit(state)} color="primary" variant="contained">
+            {
+              loading && <CircularProgress size="1.5rem" />
+            }
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     );
@@ -159,5 +156,6 @@ EditDialog.propTypes = {
   details: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 export default EditDialog;

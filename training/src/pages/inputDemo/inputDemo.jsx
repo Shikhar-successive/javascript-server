@@ -109,8 +109,6 @@ class InputDemo extends Component {
   }
 
   render() {
-    console.log(this.componantErrors(), '==========hellERRRRRRRRRRR');
-    console.log(!this.componantIsTouched(), '==========helloppppppp');
     const {
       name, sport, cricket, football,
     } = this.state;
