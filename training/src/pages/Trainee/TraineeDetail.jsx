@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import {
   Card,
   Button,
@@ -11,6 +12,7 @@ import { getFormattedDate } from '../../libs/utils/getFormattedDate';
 
 class TraineeDetail extends Component {
   render() {
+    const { history } = this.props;
     const traineeData = JSON.parse(localStorage.getItem('traineeDetail'));
     console.log(traineeData, '--------------------localStorage');
     if (traineeData) {
@@ -27,11 +29,9 @@ class TraineeDetail extends Component {
             </div>
           </Card>
           <Typography align="center">
-            <Link to="/">
-              <Button variant="outlined" color="primary">
-                Back
-              </Button>
-            </Link>
+            <Button variant="outlined" color="primary" onClick={() => history.goBack()}>
+              Back
+            </Button>
           </Typography>
         </>
       );
@@ -43,6 +43,6 @@ class TraineeDetail extends Component {
 }
 TraineeDetail.propTypes = {
   // match: PropTypes.objectOf(PropTypes.any).isRequired,
-  // history: PropTypes.instanceOf(Object).isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
 };
 export default TraineeDetail;

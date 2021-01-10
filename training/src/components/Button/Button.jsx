@@ -24,9 +24,10 @@ class Button extends Component {
 Button.propTypes = {
   value: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
-  color: PropTypes.string.isRequired,
+  color: PropTypes.string,
 };
 Button.defaultProps = {
   disabled: false,
+  color: '',
 };
 export default Button;

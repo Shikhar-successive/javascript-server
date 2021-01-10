@@ -70,7 +70,6 @@ class AddDialog extends Component {
       confirmPassword: `${confirmPassword}`,
     };
     try {
-      // console.log(!this.schema.validateSync(this.state), '??????????????? Hserror');
       return !this.schema.validateSync(data);
     } catch (err) {
       return true;
@@ -80,12 +79,10 @@ class AddDialog extends Component {
   onToched = (componant) => {
     const { touched } = this.state;
     this.setState({ touched: { ...touched, [componant]: true } });
-    // console.log(this.state, '------------------ONTOUCHED');
   }
 
   isTouched = () => {
     const { touched } = this.state;
-    // console.log(Object.keys(touched), '=============length');
     return Object.keys(touched).length !== 0;
   }
 
@@ -104,7 +101,6 @@ class AddDialog extends Component {
     };
     const { touched } = this.state;
     if (touched[componant] && this.hasError) {
-      // console.log(componant, '>>>>>>>>>>>>>>>>>>>>>>> GETERROR');
       try {
         this.schema.validateSyncAt(componant, data);
       } catch (err) {
@@ -112,10 +108,6 @@ class AddDialog extends Component {
       }
     }
     return null;
-  }
-
-  onCreate = async () => {
-
   }
 
   render() {

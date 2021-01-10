@@ -8,10 +8,13 @@ import { Table } from '../../components';
 import { getFormattedDate } from '../../libs/utils/getFormattedDate';
 import { SnackbarContext } from '../../contexts/SnackBarProvider/SnackBarProvider';
 import { callApi } from '../../libs/utils';
+import { withLoaderAndMessage } from '../../components/hoc';
 
 const asend = 'asc';
 const dsend = 'desc';
 class TraineeList extends Component {
+  EnhancedTable = withLoaderAndMessage(Table);
+
   constructor() {
     super();
     this.state = {
@@ -22,22 +25,35 @@ class TraineeList extends Component {
       edit: false,
       deleteDialog: false,
       traineeInfo: {},
-      spinner: false,
-      data: [],
+      spinner: true,
+      data: {
+        traineeCount: 0,
+        details: [],
+      },
     };
   }
 
   async componentDidMount() {
-    console.log('inside GETtraine ----');
-    const trainee = await callApi({}, 'get', '/trainee/getall');
-    if (trainee.data) {
+    console.log('inside componentDidMount ----');
+    const limit = 5;
+    const { page } = this.state;
+    const skip = page * limit;
+    const trainee = await callApi({}, 'get', '/trainee/getall', { skip, limit });
+    if (trainee === 'Network Error') {
+      this.setState({ spinner: false });
+    } else if (trainee) {
       const traineeData = trainee.data.records[0].data;
-      this.setState({ data: traineeData });
+      this.setState({
+        data: {
+          details: traineeData,
+          traineeCount: trainee.data.totalRecords,
+        },
+        spinner: false,
+      });
     } else if (localStorage.getItem('token') === null) {
       const { history } = this.props;
       history.push('/login');
     }
-    console.log(trainee);
   }
 
   onOpen = () => {
@@ -65,6 +81,9 @@ class TraineeList extends Component {
     if (user.data) {
       console.log(user);
       openSnackbar('Trainee Creadted Successfully', 'success');
+      this.setState({
+        spinner: false,
+      }, () => this.componentDidMount());
       this.onCloseEvent();
       this.getTrainees();
     } else if (user.response.status) {
@@ -130,18 +149,21 @@ class TraineeList extends Component {
   handleSelect = async (openSnackbar, data) => {
     console.log(data, 'trainee data');
     localStorage.setItem('traineeDetail', JSON.stringify(data));
-    await this.getTrainees();
-    if (localStorage.getItem('token') === null) {
+    const response = await this.getTrainees();
+    if (response === 'Network Error') {
+      openSnackbar('Network Error', 'error');
+    } else if (localStorage.getItem('token') === null) {
       openSnackbar('token expired', 'error');
       const { history } = this.props;
       history.push('/login');
+    } else {
+      const { history } = this.props;
+      history.push(`/trainee/${data.originalId}`);
     }
-    const { history } = this.props;
-    history.push(`/trainee/${data.originalId}`);
   }
 
   handlePageChange = (event, page) => {
-    this.setState({ page });
+    this.setState({ page }, () => this.componentDidMount());
   }
 
   getTrainees = async () => {
@@ -162,6 +184,7 @@ class TraineeList extends Component {
       spinner,
       data,
     } = this.state;
+    const limit = 5;
     return (
       <SnackbarContext.Consumer>
         {(openSnackbar) => (
@@ -177,9 +200,9 @@ class TraineeList extends Component {
                 loading={spinner}
               />
             </div>
-            <Table
+            <this.EnhancedTable
               id="id"
-              data={data}
+              data={data.details}
               column={[
                 {
                   field: 'name',
@@ -211,9 +234,12 @@ class TraineeList extends Component {
               order={order}
               onSort={this.handleSort}
               onSelect={(detail) => this.handleSelect(openSnackbar, detail)}
-              count={100}
+              count={data.traineeCount}
               page={page}
               onPageChange={this.handlePageChange}
+              rowsPerPage={limit}
+              loading={spinner}
+              dataLength={data.traineeCount}
             />
             <>
               { edit && (

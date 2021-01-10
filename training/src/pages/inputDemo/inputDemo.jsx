@@ -105,7 +105,7 @@ class InputDemo extends Component {
         return err.message;
       }
     }
-    return null;
+    return '';
   }
 
   render() {

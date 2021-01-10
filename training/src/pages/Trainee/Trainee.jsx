@@ -9,7 +9,7 @@ const Trainee = ({ match, history }) => (
     <Route exact path={`${match.path}`}>
       <TraineeList match={match} history={history} />
     </Route>
-    <Route exact path={`${match.path}/:id`} component={TraineeDetail} />
+    <Route exact path={`${match.path}/:id`} component={() => <TraineeDetail history={history} />} />
   </Switch>
 );
 

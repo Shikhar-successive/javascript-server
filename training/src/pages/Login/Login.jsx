@@ -99,8 +99,14 @@ class Login extends Component {
       btnDisable: true,
     });
     const user = await callApi(userInfo, 'post', '/user/login');
-    console.log(user.Data);
-    if (user.Data) {
+    console.log(user);
+    if (user === 'Network Error') {
+      this.setState({
+        spinner: false,
+        btnDisable: false,
+      });
+      openSnackbar(user, 'error');
+    } else if (user.Data) {
       this.setState({
         spinner: false,
       });
