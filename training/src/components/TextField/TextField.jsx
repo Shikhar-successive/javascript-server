@@ -5,35 +5,28 @@ import style from './style';
 class TextField extends Component {
   render() {
     const {
-      value, onChange, onBlur, error,
+      value, onChange, onBlur, error, disabled,
     } = this.props;
-    // console.log(value);
-    // console.log(disabled);
-    // console.log(this.props);
     return (
       <>
-        <input style={style.text} type="text" value={value} onChange={onChange} onBlur={onBlur} />
+        <input style={style.text} type="text" defaultValue={value} onChange={onChange} onBlur={onBlur} disabled={disabled} />
         {error ? <div style={{ color: 'red' }}>{error}</div> : ''}
       </>
     );
   }
 }
 TextField.propTypes = {
-  // disabled: PropTypes.bool,
+  disabled: PropTypes.bool,
   value: PropTypes.string,
-  // error: PropTypes.string,
-  // pattern: PropTypes.string,
   onChange: PropTypes.func,
   onBlur: PropTypes.func,
   error: PropTypes.string,
 };
 TextField.defaultProps = {
-  // disabled: PropTypes.bool.isRequired,
-  value: PropTypes.string.isRequired,
-  // error: PropTypes.string.isRequired,
-  // pattern: PropTypes.pattern,
-  onChange: PropTypes.func,
-  onBlur: PropTypes.func,
-  error: PropTypes.string,
+  disabled: false,
+  value: '',
+  onChange: () => {},
+  onBlur: () => {},
+  error: '',
 };
 export default TextField;

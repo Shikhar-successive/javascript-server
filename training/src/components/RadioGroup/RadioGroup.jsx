@@ -6,17 +6,10 @@ class RadioGroup extends Component {
     const {
       onChange, options, value, onBlur, error,
     } = this.props;
-    // console.log(options[0]);
     return (
       <>
         <div>
           {
-            // eslint-disable-next-line max-len
-            // <input type="radio" name="sportRole" id="role" value={options[0].value} onChange={onChange} />
-            // <label htmlFor={options[0].label}>
-            //   {' '}
-            //   {options[0].value}
-            // </label>
             options.map((item) => (
               <div key={item.value}>
                 <input type="radio" name="sportRole" id={item.label} onChange={onChange} value={item.value} checked={value === item.value} onBlur={onBlur} />
@@ -25,9 +18,7 @@ class RadioGroup extends Component {
             ))
           }
         </div>
-        {
-          error && (<div style={{ color: 'red' }}>{error}</div>)
-        }
+        <p style={{ color: 'red' }}>{ error }</p>
       </>
     );
   }

@@ -21,27 +21,19 @@ class Math extends Component {
     } = this.props;
     return (
       <>
-        <p>
-          {
-            children ? children({
-              first, second, result: this.getResult(), operator,
-            }) : `${first} Add ${second} = ${this.getResult}`
-          }
-        </p>
+        {
+          children ? children({
+            first, second, result: this.getResult(), operator,
+          }) : `${first} Add ${second} = ${this.getResult}`
+        }
       </>
     );
   }
 }
 Math.propTypes = {
-  first: PropTypes.number,
-  second: PropTypes.number,
-  children: PropTypes.element,
-  operator: PropTypes.string,
-};
-Math.defaultProps = {
-  first: PropTypes.number,
-  second: PropTypes.number,
-  children: PropTypes.element,
-  operator: PropTypes.string,
+  first: PropTypes.number.isRequired,
+  second: PropTypes.number.isRequired,
+  children: PropTypes.func.isRequired,
+  operator: PropTypes.string.isRequired,
 };
 export default Math;
