@@ -1,13 +1,13 @@
 import React from 'react';
-import { InputDemo } from './pages';
-import { theme } from './theme';
+import { Login } from './pages';
+// import { theme } from './theme';
 
 function App() {
-  const myTheme = theme();
+  // const myTheme = theme();
   return (
-    <div className={myTheme.root}>
-      <InputDemo />
-    </div>
+    // <div className={myTheme.root}>
+    <Login />
+    // </div>
   );
 }
 export default App;
