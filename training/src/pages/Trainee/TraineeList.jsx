@@ -40,6 +40,13 @@ class TraineeList extends Component {
     const trainee = await callApi({}, 'get', '/trainee/getall', { skip, limit });
     if (trainee === 'Network Error') {
       this.setState({ spinner: false });
+    } else if (trainee.message === 'No data Found') {
+      this.setState({
+        data: {
+          traineeCount: 0,
+        },
+        spinner: false,
+      });
     } else if (trainee) {
       const traineeData = trainee.data.records[0].data;
       this.setState({
@@ -76,7 +83,7 @@ class TraineeList extends Component {
     });
     const user = await callApi(userInfo, 'post', '/trainee/create');
     if (user.data) {
-      openSnackbar('Trainee Creadted Successfully', 'success');
+      openSnackbar(user.message, 'success');
       this.setState({
         spinner: false,
       }, () => this.componentDidMount());
@@ -128,7 +135,7 @@ class TraineeList extends Component {
     });
     const updateUser = await callApi(userInfo, 'put', '/trainee/update');
     if (updateUser.data) {
-      openSnackbar('Trainee Updated Successfully', 'success');
+      openSnackbar(updateUser.message, 'success');
       this.setState({
         spinner: false,
       }, () => this.componentDidMount());
@@ -170,16 +177,55 @@ class TraineeList extends Component {
     this.setState({
       spinner: true,
     });
-    const { traineeInfo } = this.state;
+    let { page } = this.state;
+    const { traineeInfo, data } = this.state;
     if (traineeInfo.createdAt >= '2019-02-14') {
       const deleteRec = await callApi({}, 'delete', `/trainee/delete/${traineeInfo.originalId}`);
       if (deleteRec.data) {
         openSnackbar(deleteRec.message, 'success');
-        this.setState({
-          spinner: false,
-        }, () => this.componentDidMount());
-        this.deleteDialogClose();
-        this.getTrainees();
+        if (page > 0) {
+          if (((data.traineeCount - 1) % 5) > 0) {
+            console.log(traineeInfo);
+            this.setState({
+              spinner: false,
+            }, () => this.componentDidMount());
+            this.deleteDialogClose();
+            this.getTrainees();
+            console.log(data.traineeCount);
+            console.log(page, '---page 1');
+          } else if (((data.traineeCount - 1) % 5) === 0) {
+            if ((data.traineeCount / 5) > 1 && page === this.page) {
+              console.log((data.traineeCount / 5));
+              console.log(page);
+              this.setState({
+                spinner: false,
+                // page: page -= 1,
+              }, () => this.componentDidMount());
+              this.deleteDialogClose();
+              this.getTrainees();
+              console.log(data.traineeCount);
+              console.log(page, '---page 2');
+            } else if ((data.traineeCount / 5) && !(page === this.page)) {
+              console.log(traineeInfo);
+              this.setState({
+                spinner: false,
+                page: page -= 1,
+              }, () => this.componentDidMount());
+              this.deleteDialogClose();
+              this.getTrainees();
+              console.log(data.traineeCount);
+              console.log(page, '---page 3run');
+            }
+          }
+        } else if (page === 0) {
+          this.setState({
+            spinner: false,
+          }, () => this.componentDidMount());
+          this.deleteDialogClose();
+          this.getTrainees();
+          console.log(data.traineeCount);
+          console.log(page, '---page 4');
+        }
       } else if (deleteRec === 'Network Error') {
         openSnackbar('Network Error', 'error');
         this.setState({ spinner: false });

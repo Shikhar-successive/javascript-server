@@ -110,13 +110,25 @@ class AddDialog extends Component {
     return null;
   }
 
+  handelSubmit = (state) => {
+    const { onSubmit } = this.props;
+    onSubmit(state);
+    this.setState({
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      touched: {},
+    });
+  }
+
   render() {
     const {
       name, email, password, confirmPassword,
     } = this.state;
     const state = { name, email, password };
     const {
-      open, onClose, onSubmit, loading,
+      open, onClose, loading,
     } = this.props;
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
@@ -199,7 +211,7 @@ class AddDialog extends Component {
         </div>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button disabled={this.hasError() || !this.isTouched() || loading} color="primary" variant="contained" onClick={() => onSubmit(state)}>
+          <Button disabled={this.hasError() || !this.isTouched() || loading} color="primary" variant="contained" onClick={() => this.handelSubmit(state)}>
             {
               loading && <CircularProgress size="1.5rem" />
             }
