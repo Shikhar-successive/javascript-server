@@ -13,8 +13,12 @@ class InputDemo extends Component {
   schema = Yup.object().shape({
     name: Yup.string().required(),
     sport: Yup.string().required(),
-    cricket: Yup.string().required('What you do is required field'),
-    football: Yup.string().required('What you do is required field'),
+    role: Yup.string().when('sports',
+      {
+        is: 'cricket',
+        then: Yup.string().required('What you do is required field'),
+        otherwise: Yup.string().required('What you do is required field'),
+      }),
   });
 
   constructor() {
@@ -25,7 +29,7 @@ class InputDemo extends Component {
       cricket: '',
       football: '',
       touched: {},
-      error: {},
+      // error: {},
     };
   }
 
@@ -58,41 +62,30 @@ class InputDemo extends Component {
     });
   }
 
-  getError = (componant) => {
-    const { touched, error } = this.state;
-    if (touched[componant]) {
-      return error[componant] || '';
+  hasError = () => {
+    const {
+      name,
+      sport,
+      football,
+      cricket,
+    } = this.state;
+    const data = {
+      name: `${name}`,
+      sport: `${sport}`,
+      role: `${football}` || `${cricket}`,
+    };
+    try {
+      // console.log(!this.schema.validateSync(this.state), '??????????????? Hserror');
+      return !this.schema.validateSync(data);
+    } catch (err) {
+      return true;
     }
-    return null;
   }
 
-  handelValidationOnBlur = (component) => () => {
-    console.log('handelValidationOnBlur', component);
-    const compError = {};
+  onToched = (componant) => {
     const { touched } = this.state;
-    touched[component] = true;
-    this.setState({ touched }, () => {
-      const {
-        name, sport, football, cricket,
-      } = this.state;
-      try {
-        this.schema.validateSync({
-          name, sport, football, cricket,
-        }, { abortEarly: false });
-      } catch (error) {
-        if (error) {
-          error.inner.forEach((err) => {
-            compError[err.path] = err.message;
-          });
-        } else {
-          this.setState({ error: '' });
-        }
-        this.setState({ error: compError });
-      }
-    });
-    console.log(component, '----onBlur');
-    console.log(touched, '------touched');
-    console.log(compError, '-------error');
+    this.setState({ touched: { ...touched, [componant]: true } });
+    // console.log(this.state, '------------------ONTOUCHED');
   }
 
   isTouched = () => {
@@ -125,22 +118,14 @@ class InputDemo extends Component {
     return null;
   }
 
-  componantIsTouched = () => {
-    const { touched } = this.state;
-    console.log(Object.keys(touched).length !== 0, '>>>>>>>>>>>>>componantIsTouched');
-    return Object.keys(touched).length !== 0;
-  }
-
   render() {
     console.log(this.componantErrors(), '==========hellERRRRRRRRRRR');
     console.log(!this.componantIsTouched(), '==========helloppppppp');
     const {
-      name, sport, cricket, football, error, touched,
+      name, sport, cricket, football,
     } = this.state;
-    console.log(Object.keys(error), '<<<<<<<<<<<<<<err');
-    console.log(touched, '<<<<<<<<<<<<<tch');
-    console.log(sport, '<<<<<<<<<<<<<Sprt');
-    console.log(constants.cricketRole[1].label, '<<<<<<<<<<<<<CCCCKKKK');
+    console.log(this.hasError(), '@@@@@@@@@@@@@@@@@@@2 HAS ERROR');
+    console.log(this.isTouched(), '##################### IS TOUCHED');
     return (
       <>
         <p>Name</p>
@@ -148,7 +133,7 @@ class InputDemo extends Component {
           value={name}
           error={this.getError('name')}
           onChange={this.handelNameChange}
-          onBlur={this.handelValidationOnBlur('name')}
+          onBlur={() => this.onToched('name')}
         />
         <p>Select the game you play?</p>
         <SelectField
@@ -156,7 +141,7 @@ class InputDemo extends Component {
           error={this.getError('sport')}
           defaultText={constants.defaultText}
           onChange={this.handelSportChange}
-          onBlur={this.handelValidationOnBlur('sport')}
+          onBlur={() => this.onToched('sport')}
           options={constants.sport}
         />
         {
@@ -166,10 +151,10 @@ class InputDemo extends Component {
               <p>What you do?</p>
               <RadioGroup
                 value={cricket}
-                error={this.getError('cricket')}
+                error={this.getError('role')}
                 onChange={this.handelCricketRole}
                 options={constants.cricketRole}
-                onBlur={this.handelValidationOnBlur('cricket')}
+                onBlur={() => this.onToched('role')}
               />
               {' '}
             </div>
@@ -182,22 +167,27 @@ class InputDemo extends Component {
               {' '}
               <RadioGroup
                 value={football}
-                error={this.getError('football')}
+                error={this.getError('role')}
                 onChange={this.handelFootballRole}
                 options={constants.footballRole}
-                onBlur={this.handelValidationOnBlur('football')}
+                onBlur={() => this.onToched('role')}
               />
               {' '}
             </div>
           ) : <p> </p>
         }
-        <Button
-          color="primary"
-          disabled={this.componantErrors() || !this.componantIsTouched()}
-          style={style.buttonStyle}
-          value="Submit"
-          onClick={() => {}}
-        />
+        <div style={{ marginLeft: '90%' }}>
+          <Button
+            style={style.buttonStyle}
+            value="Cancel"
+          />
+          <Button
+            color="primary"
+            disabled={this.hasError() || !this.isTouched()}
+            style={style.buttonStyle}
+            value="Submit"
+          />
+        </div>
       </>
     );
   }
