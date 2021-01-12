@@ -20,19 +20,17 @@ class TextFieldDemo extends Component {
         <p>This is Disabled Input</p>
         <TextField
           value="disabled input"
-          error="Error"
           disabled
         />
         <p>A Valid Input</p>
         <TextField
           value="Accessible"
-          error="Error"
           disabled={false}
         />
         <p>An Input with Error</p>
         <TextField
           value="101"
-          error="Error"
+          error="Could not be greater than"
           disabled={false}
           pattern="[A-Za-z]+"
         />

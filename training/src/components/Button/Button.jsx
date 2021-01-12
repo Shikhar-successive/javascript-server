@@ -8,7 +8,6 @@ class Button extends Component {
       disabled, value, color,
     } = this.props;
     let btnprimary;
-    // console.log(disabled, '--------DISABLED');
     if (!disabled) {
       btnprimary = btnstyle[color];
     } else {
@@ -28,8 +27,6 @@ Button.propTypes = {
   color: PropTypes.string.isRequired,
 };
 Button.defaultProps = {
-  // value: PropTypes.string,
   disabled: false,
-  // color: PropTypes.string,
 };
 export default Button;

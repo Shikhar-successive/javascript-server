@@ -88,7 +88,7 @@ class Login extends Component {
   render() {
     const paperStyle = {
       padding: 20,
-      height: '55vh',
+      height: '65vh',
       width: '45vh',
       margin: '25px auto',
     };
@@ -144,7 +144,7 @@ class Login extends Component {
                 }}
               />
             </div>
-            <div style={{ marginTop: '18px' }}>
+            <div style={{ marginTop: '28px' }}>
               <DialogActions>
                 <Button fullWidth disabled={this.hasError() || !this.isTouched()} color="primary" variant="contained">Submit</Button>
               </DialogActions>
