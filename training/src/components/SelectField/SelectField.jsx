@@ -25,20 +25,11 @@ class SelectField extends Component {
 }
 
 SelectField.propTypes = {
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-  options: PropTypes.instanceOf(Array),
-  defaultText: PropTypes.string,
-  onBlur: PropTypes.func,
-  error: PropTypes.string,
-};
-
-SelectField.defaultProps = {
   value: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-  options: PropTypes.instanceOf(Array),
-  defaultText: PropTypes.string,
-  onBlur: PropTypes.func,
-  error: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.instanceOf(Array).isRequired,
+  defaultText: PropTypes.string.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
 };
 export default SelectField;

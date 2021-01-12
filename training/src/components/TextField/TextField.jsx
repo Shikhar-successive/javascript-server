@@ -7,9 +7,6 @@ class TextField extends Component {
     const {
       value, onChange, onBlur, error,
     } = this.props;
-    // console.log(value);
-    // console.log(disabled);
-    // console.log(this.props);
     return (
       <>
         <input style={style.text} type="text" value={value} onChange={onChange} onBlur={onBlur} />
@@ -19,21 +16,9 @@ class TextField extends Component {
   }
 }
 TextField.propTypes = {
-  // disabled: PropTypes.bool,
-  value: PropTypes.string,
-  // error: PropTypes.string,
-  // pattern: PropTypes.string,
-  onChange: PropTypes.func,
-  onBlur: PropTypes.func,
-  error: PropTypes.string,
-};
-TextField.defaultProps = {
-  // disabled: PropTypes.bool.isRequired,
   value: PropTypes.string.isRequired,
-  // error: PropTypes.string.isRequired,
-  // pattern: PropTypes.pattern,
-  onChange: PropTypes.func,
-  onBlur: PropTypes.func,
-  error: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
 };
 export default TextField;

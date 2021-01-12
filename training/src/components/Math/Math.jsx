@@ -33,15 +33,9 @@ class Math extends Component {
   }
 }
 Math.propTypes = {
-  first: PropTypes.number,
-  second: PropTypes.number,
-  children: PropTypes.element,
-  operator: PropTypes.string,
-};
-Math.defaultProps = {
-  first: PropTypes.number,
-  second: PropTypes.number,
-  children: PropTypes.element,
-  operator: PropTypes.string,
+  first: PropTypes.number.isRequired,
+  second: PropTypes.number.isRequired,
+  children: PropTypes.element.isRequired,
+  operator: PropTypes.string.isRequired,
 };
 export default Math;
