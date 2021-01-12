@@ -6,16 +6,16 @@ import { Typography, Button } from '@material-ui/core';
 class Navbar extends Component {
   render() {
     return (
-      <AppBar>
+      <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
             Trainee Portal
           </Typography>
-          <Button color="inherit">Trainee</Button>
-          <Button color="inherit">TextField Demo</Button>
-          <Button color="inherit">Input Demo</Button>
-          <Button color="inherit">Children Demo</Button>
-          <Button color="inherit">Logout</Button>
+          <Button href="/" color="inherit">Trainee</Button>
+          <Button href="/TextField-Demo" color="inherit">TextField Demo</Button>
+          <Button href="/Input-Demo" color="inherit">Input Demo</Button>
+          <Button href="/Children-Demo" color="inherit">Children Demo</Button>
+          <Button href="/logout" color="inherit">Logout</Button>
         </Toolbar>
       </AppBar>
     );
