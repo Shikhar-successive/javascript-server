@@ -217,36 +217,6 @@ class TraineeList extends Component {
               console.log(data.traineeCount);
               console.log(page, '---page 2aa');
             }
-            // if ((data.traineeCount / 5) > 1 && page === this.page) {
-            // if (((data.traineeCount / 5) === page)) {
-            //   console.log(Math.round(data.traineeCount / 5), '2');
-            //   console.log(page);
-            //   this.setState({
-            //     spinner: false,
-            //     page: page -= 1,
-            //   }, () => this.componentDidMount());
-            //   this.deleteDialogClose();
-            //   this.getTrainees();
-            //   console.log(data.traineeCount);
-            //   console.log(page, '---page 2');
-            // }
-            // if ((data.traineeCount / 5) === page) {
-            //   this.setState({
-            //     // spinner: false,
-            //     page: page -= 1,
-            //   }, () => this.componentDidMount());
-            // }
-            // } else if ((data.traineeCount / 5) && !(page === this.page)) {
-            //   console.log(traineeInfo);
-            //   this.setState({
-            //     spinner: false,
-            //     page: page -= 1,
-            //   }, () => this.componentDidMount());
-            //   this.deleteDialogClose();
-            //   this.getTrainees();
-            //   console.log(data.traineeCount);
-            //   console.log(page, '---page 3run');
-            // }
           }
         } else if (page === 0) {
           this.setState({
