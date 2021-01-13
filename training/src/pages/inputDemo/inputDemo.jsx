@@ -34,31 +34,22 @@ class InputDemo extends Component {
   }
 
   handelNameChange = (event) => {
-    // console.log('handelNameChange fun');
     this.setState({ name: event.target.value }, () => {
-      console.log(this.state);
     });
   }
 
   handelSportChange = (event) => {
-    // console.log('handelSportChange');
     this.setState({ sport: event.target.value, football: '', cricket: '' }, () => {
-      console.log(this.state);
     });
   }
 
   handelCricketRole = (event) => {
-    console.log(event);
-    console.log(event.target.value);
     this.setState({ cricket: event.target.value }, () => {
-      console.log(this.state);
     });
   }
 
   handelFootballRole = (event) => {
-    // console.log('handelCricketRole');
     this.setState({ football: event.target.value }, () => {
-      console.log(this.state);
     });
   }
 
@@ -108,24 +99,19 @@ class InputDemo extends Component {
     };
     const { touched } = this.state;
     if (touched[componant] && this.hasError) {
-      // console.log(componant, '>>>>>>>>>>>>>>>>>>>>>>> GETERROR');
       try {
         this.schema.validateSyncAt(componant, data);
       } catch (err) {
         return err.message;
       }
     }
-    return null;
+    return '';
   }
 
   render() {
-    console.log(this.componantErrors(), '==========hellERRRRRRRRRRR');
-    console.log(!this.componantIsTouched(), '==========helloppppppp');
     const {
       name, sport, cricket, football,
     } = this.state;
-    console.log(this.hasError(), '@@@@@@@@@@@@@@@@@@@2 HAS ERROR');
-    console.log(this.isTouched(), '##################### IS TOUCHED');
     return (
       <>
         <p>Name</p>

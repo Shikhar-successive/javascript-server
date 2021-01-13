@@ -6,7 +6,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import EmailIcon from '@material-ui/icons/Email';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import * as Yup from 'yup';
+import PropTypes from 'prop-types';
+import { callApi } from '../../libs/utils';
+import { SnackbarContext } from '../../contexts/SnackBarProvider/SnackBarProvider';
 
 class Login extends Component {
   schema = Yup.object().shape({
@@ -21,7 +25,9 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      spinner: false,
       touched: {},
+      btnDisable: false,
     };
   }
 
@@ -45,7 +51,6 @@ class Login extends Component {
       password: `${password}`,
     };
     try {
-      // console.log(!this.schema.validateSync(this.state), '??????????????? Hserror');
       return !this.schema.validateSync(data);
     } catch (err) {
       return true;
@@ -55,12 +60,10 @@ class Login extends Component {
   onToched = (componant) => {
     const { touched } = this.state;
     this.setState({ touched: { ...touched, [componant]: true } });
-    // console.log(this.state, '------------------ONTOUCHED');
   }
 
   isTouched = () => {
     const { touched } = this.state;
-    // console.log(Object.keys(touched), '=============length');
     return Object.keys(touched).length !== 0;
   }
 
@@ -75,7 +78,6 @@ class Login extends Component {
     };
     const { touched } = this.state;
     if (touched[componant] && this.hasError) {
-      // console.log(componant, '>>>>>>>>>>>>>>>>>>>>>>> GETERROR');
       try {
         this.schema.validateSyncAt(componant, data);
       } catch (err) {
@@ -85,74 +87,121 @@ class Login extends Component {
     return null;
   }
 
+  onLogin = async (openSnackbar) => {
+    const { email, password } = this.state;
+    const userInfo = { email, password };
+    this.setState({
+      spinner: true,
+      btnDisable: true,
+    });
+    const user = await callApi(userInfo, 'post', '/user/login');
+    if (user === 'Network Error') {
+      this.setState({
+        spinner: false,
+        btnDisable: false,
+      });
+      openSnackbar(user, 'error');
+    } else if (user.Data) {
+      this.setState({
+        spinner: false,
+      });
+      localStorage.setItem('token', user.Data);
+      const { history } = this.props;
+      history.push('/Trainee');
+    } else {
+      this.setState({
+        btnDisable: false,
+        spinner: false,
+      });
+      openSnackbar(user.response.data.message, 'error');
+    }
+  }
+
   render() {
     const paperStyle = {
       padding: 20,
-      height: '55vh',
-      width: '45vh',
+      height: '65vh',
+      width: '55vh',
       margin: '25px auto',
     };
     const AvatarColor = {
       backgroundColor: ' #f01539',
     };
-    const { email, password } = this.state;
+    const {
+      email,
+      password,
+      spinner,
+      btnDisable,
+    } = this.state;
     return (
-      <Grid>
-        <Paper elevation={10} style={paperStyle}>
-          <Grid align="center">
-            <Avatar style={AvatarColor}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <h2>Login</h2>
-            <div style={{ marginTop: '8px' }}>
-              <TextField
-                value={email}
-                error={this.getError('email')}
-                helperText={this.getError('email')}
-                onChange={this.handelEmailChange}
-                onBlur={() => this.onToched('email')}
-                label="Email Address"
-                variant="outlined"
-                type="Email"
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <EmailIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-            <div style={{ marginTop: '12px' }}>
-              <TextField
-                value={password}
-                error={this.getError('password')}
-                helperText={this.getError('password')}
-                onChange={this.handelPasswordChange}
-                onBlur={() => this.onToched('password')}
-                label="Password*"
-                type="password"
-                variant="outlined"
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <VisibilityOffIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-            <div style={{ marginTop: '18px' }}>
-              <DialogActions>
-                <Button fullWidth disabled={this.hasError() || !this.isTouched()} color="primary" variant="contained">Submit</Button>
-              </DialogActions>
-            </div>
+      <SnackbarContext.Consumer>
+        {(openSnackbar) => (
+          <Grid>
+            <Paper elevation={10} style={paperStyle}>
+              <Grid align="center">
+                <Avatar style={AvatarColor}>
+                  <LockOutlinedIcon />
+                </Avatar>
+                <h2>Login</h2>
+                <div style={{ marginTop: '8px' }}>
+                  <TextField
+                    value={email}
+                    error={this.getError('email')}
+                    helperText={this.getError('email')}
+                    onChange={this.handelEmailChange}
+                    onBlur={() => this.onToched('email')}
+                    label="Email Address"
+                    variant="outlined"
+                    type="Email"
+                    fullWidth
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <EmailIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </div>
+                <div style={{ marginTop: '12px' }}>
+                  <TextField
+                    value={password}
+                    error={this.getError('password')}
+                    helperText={this.getError('password')}
+                    onChange={this.handelPasswordChange}
+                    onBlur={() => this.onToched('password')}
+                    label="Password*"
+                    type="password"
+                    variant="outlined"
+                    fullWidth
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <VisibilityOffIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </div>
+                <div style={{ marginTop: '28px' }}>
+                  <DialogActions>
+                    <Button fullWidth disabled={this.hasError() || !this.isTouched() || btnDisable} onClick={() => this.onLogin(openSnackbar)} color="primary" variant="contained">
+                      {
+                        spinner && <CircularProgress size="1.5rem" />
+                      }
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </div>
+              </Grid>
+            </Paper>
           </Grid>
-        </Paper>
-      </Grid>
+        )}
+      </SnackbarContext.Consumer>
     );
   }
 }
+Login.propTypes = {
+  history: PropTypes.instanceOf(Object).isRequired,
+};
 export default Login;

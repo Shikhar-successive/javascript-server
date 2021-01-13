@@ -1,28 +1,22 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { Component } from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import EmailIcon from '@material-ui/icons/Email';
 import PersonIcon from '@material-ui/icons/Person';
-import DialogContentText from '@material-ui/core/DialogContentText';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import * as Yup from 'yup';
 
-class AddDialog extends Component {
+class EditDialog extends Component {
   schema = Yup.object().shape({
     name: Yup.string().required('Name is Required Field'),
     email: Yup.string().email().required('Email is Required Field'),
-    password: Yup.string()
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$/g, 'must contain at least eight characters, one number, both lower and uppercase letters and special characters')
-      .required('Password is Required Field'),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password'), null], 'Passwords must match')
-      .required('Confirm Password is required field'),
   });
 
   constructor(props) {
@@ -30,8 +24,6 @@ class AddDialog extends Component {
     this.state = {
       name: '',
       email: '',
-      password: '',
-      confirmPassword: '',
       touched: {},
     };
   }
@@ -46,28 +38,14 @@ class AddDialog extends Component {
     });
   }
 
-  handelPasswordChange = (event) => {
-    this.setState({ password: event.target.value }, () => {
-    });
-  }
-
-  handelConfirmChange = (event) => {
-    this.setState({ confirmPassword: event.target.value }, () => {
-    });
-  }
-
   hasError = () => {
     const {
       name,
       email,
-      password,
-      confirmPassword,
     } = this.state;
     const data = {
       name: `${name}`,
       email: `${email}`,
-      password: `${password}`,
-      confirmPassword: `${confirmPassword}`,
     };
     try {
       return !this.schema.validateSync(data);
@@ -90,14 +68,10 @@ class AddDialog extends Component {
     const {
       name,
       email,
-      password,
-      confirmPassword,
     } = this.state;
     const data = {
       name: `${name}`,
       email: `${email}`,
-      password: `${password}`,
-      confirmPassword: `${confirmPassword}`,
     };
     const { touched } = this.state;
     if (touched[componant] && this.hasError) {
@@ -110,33 +84,24 @@ class AddDialog extends Component {
     return null;
   }
 
-  handelSubmit = (state) => {
-    const { onSubmit } = this.props;
-    onSubmit(state);
-    this.setState({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      touched: {},
-    });
-  }
-
   render() {
+    const { name, email } = this.state;
     const {
-      name, email, password, confirmPassword,
-    } = this.state;
-    const state = { name, email, password };
-    const {
-      open, onClose, loading,
+      open,
+      onClose,
+      details,
+      onSubmit,
+      loading,
     } = this.props;
+    const traineeId = details.originalId;
+    const state = { name, email, traineeId };
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
-        <DialogTitle style={{ alignContent: 'start' }}>Add Trainee</DialogTitle>
-        <DialogContentText style={{ paddingLeft: '25px' }}>Enter your Trainee details</DialogContentText>
+        <DialogTitle style={{ alignContent: 'start' }}>Edit Trainee</DialogTitle>
+        <DialogContentText style={{ paddingLeft: '25px' }}>Enter your trainee details</DialogContentText>
         <div style={{ paddingLeft: '12px', paddingTop: '8px', paddingRight: '12px' }}>
           <TextField
-            value={name}
+            defaultValue={details.name}
             error={this.getError('name')}
             helperText={this.getError('name')}
             onChange={this.handelNameChange}
@@ -155,14 +120,14 @@ class AddDialog extends Component {
         </div>
         <div style={{ paddingLeft: '12px', paddingTop: '8px', paddingRight: '12px' }}>
           <TextField
-            value={email}
+            // value={email}
+            defaultValue={details.email}
             error={this.getError('email')}
             helperText={this.getError('email')}
             onChange={this.handelEmailChange}
             onBlur={() => this.onToched('email')}
             label="Email*"
             variant="outlined"
-            type="Email"
             fullWidth
             InputProps={{
               startAdornment: (
@@ -173,45 +138,9 @@ class AddDialog extends Component {
             }}
           />
         </div>
-        <div style={{ paddingLeft: '12px', paddingTop: '8px', alignItems: 'space-evenly' }}>
-          <TextField
-            value={password}
-            error={this.getError('password')}
-            helperText={this.getError('password')}
-            onChange={this.handelPasswordChange}
-            onBlur={() => this.onToched('password')}
-            label="Password*"
-            type="password"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <VisibilityOffIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <TextField
-            value={confirmPassword}
-            error={this.getError('confirmPassword')}
-            helperText={this.getError('confirmPassword')}
-            onChange={this.handelConfirmChange}
-            onBlur={() => this.onToched('confirmPassword')}
-            label="Confirm Password*"
-            type="password"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <VisibilityOffIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </div>
         <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button disabled={this.hasError() || !this.isTouched() || loading} color="primary" variant="contained" onClick={() => this.handelSubmit(state)}>
+          <Button onClick={onClose} color="primary">Cancel</Button>
+          <Button disabled={this.hasError() || !this.isTouched() || loading} onClick={() => onSubmit(state)} color="primary" variant="contained">
             {
               loading && <CircularProgress size="1.5rem" />
             }
@@ -222,14 +151,11 @@ class AddDialog extends Component {
     );
   }
 }
-AddDialog.propTypes = {
-  open: PropTypes.bool,
-  onClose: PropTypes.func,
+EditDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  details: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
 };
-AddDialog.defaultProps = {
-  open: PropTypes.bool,
-  onClose: PropTypes.func,
-};
-export default AddDialog;
+export default EditDialog;
