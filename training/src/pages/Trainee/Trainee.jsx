@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import TraineeList from './TraineeList';
 import TraineeDetail from './TraineeDetail';
 
+
 const Trainee = ({ match }) => (
   <Switch>
     <Route exact path={`${match.path}`}>
